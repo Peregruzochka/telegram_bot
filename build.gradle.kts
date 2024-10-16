@@ -40,6 +40,15 @@ dependencies {
 	 * Tests
 	 */
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	/**
+	 * Telegram
+	 */
+	implementation("org.telegram:telegrambots:6.9.7.1")
+
+
+
+
 }
 
 tasks.withType<Test> {
