@@ -24,10 +24,21 @@ repositories {
 }
 
 dependencies {
+	/**
+	 * SpringBoot
+	 */
 	implementation("org.springframework.boot:spring-boot-starter")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	/**
+	 * Utils
+	 */
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	/**
+	 * Tests
+	 */
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
