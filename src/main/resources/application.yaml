@@ -1,6 +1,8 @@
 spring:
   config:
-    import: "optional:classpath:bot.yaml"
+    import:
+      - "optional:classpath:bot.yaml"
+      - "optional:classpath:text.yaml"
 
 logging:
   level:
