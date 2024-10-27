@@ -2,7 +2,7 @@ spring:
   config:
     import:
       - "optional:classpath:bot.yaml"
-      - "optional:classpath:text.yaml"
+      - "optional:classpath:attribute.yaml"
 
 logging:
   level:
