@@ -11,16 +11,17 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 @Slf4j
 @RequiredArgsConstructor
 public class DirectionHandler implements UpdateHandler {
+
     private final DirectionAttribute attribute;
     private final TelegramBot bot;
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/schedule");
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/direction");
     }
 
     @Override
     public void compute(Update update) {
-        bot.edit(attribute.getText(), attribute.getMarkup(), update);
+        bot.edit(attribute.getText(), attribute.createMarkup(), update);
     }
 }

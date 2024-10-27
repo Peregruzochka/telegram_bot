@@ -9,6 +9,7 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 @Component
 @RequiredArgsConstructor
 public class StartCallbackHandler implements UpdateHandler {
+
     private final StartAttribute attribute;
     private final TelegramBot bot;
 
@@ -19,6 +20,6 @@ public class StartCallbackHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
-        bot.edit(attribute.getText(), attribute.getMarkup(), update);
+        bot.edit(attribute.getText(), attribute.createMarkup(), update);
     }
 }

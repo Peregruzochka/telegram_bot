@@ -1,6 +1,5 @@
 package ru.pereguzochka.telegram_bot.bot;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -56,7 +55,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         return token;
     }
 
-    public void send(String text, ReplyKeyboard markup, Long chatId) {
+    public void send(String text, ReplyKeyboard markup, Update update) {
+        Long chatId = update.getMessage().getChatId();
+
         SendMessage sendMessage = SendMessage.builder()
                 .text(text)
                 .replyMarkup(markup)
