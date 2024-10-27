@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -8,19 +9,15 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 
-@RequiredArgsConstructor
-public abstract class BaseAttribute<T extends BaseAttributePojo> {
+@Getter
+@Setter
+public abstract class BaseAttribute {
 
-    protected final T attributePojo;
-
-    public String getText() {
-        return attributePojo.getText();
-    }
+    protected String text;
+    protected List<String> buttons;
+    protected List<String> callbacks;
 
     public InlineKeyboardMarkup createMarkup() {
-        List<String> buttons = attributePojo.getButtons();
-        List<String> callbacks = attributePojo.getCallbacks();
-
         if (buttons.size() != callbacks.size()) {
             throw new IllegalStateException("The sizes of the lists of buttons and callbacks must match");
         }

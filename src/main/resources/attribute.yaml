@@ -39,7 +39,7 @@ attr:
       - "/logoped"
       - "/diagnostic_logoped"
       - "/logoped_defect"
-      - "/diagnostic_logoped_defectologist"
+      - "/diagnostic_logoped_defect"
       - "/psychologist_neuropsychologist"
       - "/diagnostic_psychologist_neuropsychologist"
       - "/developing_classes"
