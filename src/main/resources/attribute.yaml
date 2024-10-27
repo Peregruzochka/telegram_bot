@@ -1,6 +1,9 @@
 attr:
   start:
-    text: "<b>Здравствуйте!</b>\nБудем рады помочь в решении Вашего вопроса!\nВыберете действие:"
+    text: |
+      <b>Здравствуйте!</b>
+      Будем рады помочь в решении Вашего вопроса!
+      Выберете действие:
     buttons:
       - "Записаться на занятие"
       - "Перенести занятие"
@@ -13,7 +16,8 @@ attr:
       - "/view"
 
   direction:
-    text: "<b>Выберете желаемое направление</b>"
+    text: |
+      <b>Выберете желаемое направление</b>
     buttons:
       - "Логопед"
       - "Диагностика с логопедом"
@@ -34,7 +38,7 @@ attr:
     callbacks:
       - "/logoped"
       - "/diagnostic_logoped"
-      - "/logoped_defectologist"
+      - "/logoped_defect"
       - "/diagnostic_logoped_defectologist"
       - "/psychologist_neuropsychologist"
       - "/diagnostic_psychologist_neuropsychologist"
