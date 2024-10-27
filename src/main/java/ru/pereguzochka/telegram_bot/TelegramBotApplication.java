@@ -24,5 +24,4 @@ public class TelegramBotApplication {
 		botApi.registerBot(bot);
 		return botApi;
 	}
-
 }
