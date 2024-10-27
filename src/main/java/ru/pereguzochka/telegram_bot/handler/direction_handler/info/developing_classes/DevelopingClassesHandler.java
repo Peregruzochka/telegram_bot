@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.direction_handler.info.diagnostic_psycholog_neuropsycholog;
+package ru.pereguzochka.telegram_bot.handler.direction_handler.info.developing_classes;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,13 +8,14 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 @Component
 @RequiredArgsConstructor
-public class DiagnosticPsychologistNeuropsychologistHandler implements UpdateHandler {
-    private final DiagnosticPsychologistNeuropsychologistAttribute attribute;
+public class DevelopingClassesHandler implements UpdateHandler {
+
+    private final DevelopingClassesAttribute attribute;
     private final TelegramBot bot;
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/diagnostic_psycholog_neuropsycholog");
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/developing_classes");
     }
 
     @Override
