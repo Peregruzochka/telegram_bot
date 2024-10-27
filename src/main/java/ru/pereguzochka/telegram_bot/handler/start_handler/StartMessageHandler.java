@@ -8,18 +8,20 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 @Component
 @RequiredArgsConstructor
-public class StartHandler implements UpdateHandler {
+public class StartMessageHandler implements UpdateHandler {
 
     private final TelegramBot bot;
     private final StartAttribute attribute;
 
     public boolean isApplicable(Update update) {
-        return update.getMessage().getText().equals("/start");
+        return update.hasMessage() && update.getMessage().getText().equals("/start");
     }
 
     public void compute(Update update) {
         Long chatId = update.getMessage().getChatId();
         //TODO получить данные из back-end
+        //если данные есть, то один набор кнопок
+        //если нет, то второй набор кнопок
         bot.send(attribute.getText(), attribute.getMarkup(), chatId);
     }
 }
