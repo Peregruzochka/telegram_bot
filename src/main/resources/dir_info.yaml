@@ -336,7 +336,7 @@ attr:
       - "/direction"
 
   russian-language-tutor:
-    text: | 
+    text: |
       Пока нет информации
     buttons:
       - "Продолжить запись »"
