@@ -4,14 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
+import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
+
+import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.*;
 
 @Component
 @RequiredArgsConstructor
 public class StartCallbackHandler implements UpdateHandler {
 
-    private final StartAttribute attribute;
+    private final FirstStartAttribute firstStartAttribute;
+    private final StartAttribute startAttribute;
     private final TelegramBot bot;
+    private final RegistrationCache cache;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -20,6 +26,13 @@ public class StartCallbackHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
-        bot.edit(attribute.getText(), attribute.createMarkup(), update);
+        Long telegramId = update.getCallbackQuery().getFrom().getId();
+        RegistrationDto registrationDto = cache.getCache().get(telegramId);
+        if (registrationDto.getType().equals(NEW_USER)) {
+            bot.edit(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
+        } else {
+            String username = registrationDto.getUsername();
+            bot.edit(startAttribute.createText(username), startAttribute.createMarkup(), update);
+        }
     }
 }
