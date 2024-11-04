@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
+
+import java.util.List;
 
 @Component
 @Slf4j
@@ -13,6 +16,7 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 public class DirectionHandler implements UpdateHandler {
 
     private final DirectionAttribute attribute;
+    private final DeletedMessageCache cache;
     private final TelegramBot bot;
 
     @Override

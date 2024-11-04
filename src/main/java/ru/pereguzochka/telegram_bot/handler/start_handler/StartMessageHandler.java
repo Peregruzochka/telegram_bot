@@ -43,6 +43,7 @@ public class StartMessageHandler implements UpdateHandler {
 
             cache.getCache().put(telegramId, registrationDto);
             bot.send(startAttribute.createText(username), startAttribute.createMarkup(), update);
+
         } else {
             RegistrationDto registrationDto = RegistrationDto.builder()
                     .telegramId(telegramId)
@@ -52,6 +53,8 @@ public class StartMessageHandler implements UpdateHandler {
             cache.getCache().put(telegramId, registrationDto);
             bot.send(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
         }
+
+        bot.delete(update);
     }
 
     private UserDto getUser(Long telegramId) {

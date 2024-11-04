@@ -63,3 +63,24 @@ attr:
       - "/creative_workshop"
       - "/calligraphy"
       - "/start"
+
+  teachers:
+    text: |
+      <b>Выберите педагога:</b>
+    buttons:
+      - « Назад
+    callbacks:
+      - /direction
+
+    uuids:
+      - 8ea4bc97-48fc-4787-943e-36ac42baa060
+      - fa8ed56d-a8da-431b-986c-eab37130b5eb
+      - 6e0fe30e-be0a-4ad4-a84e-1ee627e2740c
+    paths:
+      - src/main/resources/photo/teacher/teacher1.jpg
+      - src/main/resources/photo/teacher/teacher2.jpg
+      - src/main/resources/photo/teacher/teacher3.jpg
+    teacher-callbacks:
+      - /teacher1
+      - /teacher2
+      - /teacher3
