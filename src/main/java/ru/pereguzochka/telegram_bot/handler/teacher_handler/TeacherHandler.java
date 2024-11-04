@@ -28,9 +28,9 @@ public class TeacherHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         List<TeacherDto> teachers = getTeachers();
-        bot.delete(update);
         bot.sendPhotos(attribute.createPaths(teachers), update);
         bot.send(attribute.getText(), attribute.createMarkup(teachers), update);
+        bot.delete(update);
     }
 
     private List<TeacherDto> getTeachers() {

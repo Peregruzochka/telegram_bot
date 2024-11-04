@@ -53,6 +53,8 @@ public class StartMessageHandler implements UpdateHandler {
             cache.getCache().put(telegramId, registrationDto);
             bot.send(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
         }
+
+        bot.delete(update);
     }
 
     private UserDto getUser(Long telegramId) {
