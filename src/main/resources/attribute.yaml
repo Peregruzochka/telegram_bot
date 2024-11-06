@@ -68,10 +68,11 @@ attr:
     text: |
       <b>Выберите педагога:</b>
     buttons:
-      - « Назад
+      - « Назад к выбору направления
     callbacks:
       - /direction
 
+    # добавить значения при добавлении преподавателя
     uuids:
       - 8ea4bc97-48fc-4787-943e-36ac42baa060
       - fa8ed56d-a8da-431b-986c-eab37130b5eb
@@ -84,3 +85,21 @@ attr:
       - /teacher1
       - /teacher2
       - /teacher3
+
+  datetime:
+    text: |
+      ✅ - дни, когда запись доступна
+      ❌ - дни, когда запись недоступна
+      
+      <b>Выберите дату занятия:</b>
+    buttons:
+      - « Назад к выбору педагога
+    callbacks:
+      - /teachers
+    prev-button-text: « Предыдущая неделя
+    prev-button-callback: "/changeweek-"
+    next-button-text: Следующая неделя »
+    next-button-callback: "/changeweek+"
+    time-callback: "/time:"
+    ok-day: ✅
+    not-ok-day: ❌
