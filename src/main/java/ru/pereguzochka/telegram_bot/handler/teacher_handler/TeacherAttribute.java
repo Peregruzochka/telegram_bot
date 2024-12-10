@@ -30,8 +30,12 @@ public class TeacherAttribute extends BaseAttribute {
             int index = uuids.indexOf(teacher.getId());
             truePaths.add(paths.get(index));
         }
-
         return truePaths;
+    }
+
+    public UUID getIdByCallback(String callback) {
+        int index = teacherCallbacks.indexOf(callback);
+        return uuids.get(index);
     }
 
     public InlineKeyboardMarkup createMarkup(List<TeacherDto> teachers) {
