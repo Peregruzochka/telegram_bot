@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 public class ChangeWeekHandler implements UpdateHandler {
 
     private final TelegramBot bot;
-    private final DateTimeAttribute attribute;
+    private final DateAttribute attribute;
     private final WeekCursorCache cache;
 
     @Override
@@ -36,7 +36,7 @@ public class ChangeWeekHandler implements UpdateHandler {
         } else if (callback.endsWith("-")) {
             weak--;
         }
-        bot.edit(attribute.getText(), attribute.createMarkup(getTimeSlots(null, null), weak), update);
+        bot.edit(attribute.getText(), attribute.createWeekMarkup(getTimeSlots(null, null), weak), update);
         cache.getCache().put(chatId, weak);
     }
 

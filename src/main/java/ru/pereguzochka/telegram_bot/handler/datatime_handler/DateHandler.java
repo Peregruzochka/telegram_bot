@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
-import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
+import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.handler.teacher_handler.TeacherAttribute;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,21 +15,21 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-public class DateTimeHandler implements UpdateHandler {
+public class DateHandler implements UpdateHandler {
     private final TelegramBot bot;
-    private final TeacherAttribute teacherAttribute;
-    private final RegistrationCache registrationCache;
-    private final DateTimeAttribute dataTimeAttribute;
+    private final WeekCursorCache weekCursorCache;
+    private final DateAttribute dataTimeAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/datetime");
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/date");
     }
 
     @Override
     public void compute(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        String callback = update.getCallbackQuery().getData();
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        int week = weekCursorCache.getCache().getOrDefault(chatId, 0);
+        bot.edit(dataTimeAttribute.getText(), dataTimeAttribute.createWeekMarkup(getSlots(null, null), week), update);
     }
 
     private List<TimeSlotDto> getSlots(UUID lessonId, UUID teacherId) {

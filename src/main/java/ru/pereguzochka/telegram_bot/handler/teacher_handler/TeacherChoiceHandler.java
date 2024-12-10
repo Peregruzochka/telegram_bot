@@ -11,7 +11,7 @@ import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.handler.datatime_handler.DateTimeAttribute;
+import ru.pereguzochka.telegram_bot.handler.datatime_handler.DateAttribute;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 public class TeacherChoiceHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final TeacherAttribute teacherAttribute;
-    private final DateTimeAttribute dateTimeAttribute;
+    private final DateAttribute dateAttribute;
     private final RegistrationCache registrationCache;
     private final WeekCursorCache weekCursorCache;
 
@@ -50,8 +50,8 @@ public class TeacherChoiceHandler implements UpdateHandler {
             //TODO: запрос в backend
             List<TimeSlotDto> timeSlots = getTimeSlots(lessonId, teacherId);
             int weak = 0;
-            InlineKeyboardMarkup markup = dateTimeAttribute.createMarkup(timeSlots, weak);
-            bot.edit(dateTimeAttribute.getText(), markup, update);
+            InlineKeyboardMarkup markup = dateAttribute.createWeekMarkup(timeSlots, weak);
+            bot.edit(dateAttribute.getText(), markup, update);
             weekCursorCache.getCache().put(chatId, weak);
         }
     }

@@ -86,7 +86,7 @@ attr:
       - /teacher2
       - /teacher3
 
-  datetime:
+  date:
     text: |
       ✅ - дни, когда запись доступна
       ❌ - дни, когда запись недоступна
@@ -97,9 +97,23 @@ attr:
     callbacks:
       - /teachers
     prev-button-text: « Предыдущая неделя
-    prev-button-callback: "/changeweek-"
+    prev-button-callback: /changeweek-
     next-button-text: Следующая неделя »
-    next-button-callback: "/changeweek+"
-    time-callback: "/time:"
+    next-button-callback: /changeweek+
+    time-callback: "/time-set:"
     ok-day: ✅
     not-ok-day: ❌
+
+  time-set:
+    text: |
+      <b>Выберите подходящее время:</b>
+    buttons:
+      - « Назад к выбору даты
+      - Нет подходящего времени
+    callbacks:
+      - /date
+      - /connect-with-admin
+
+    time-slot-callback: "/time-slot"
+
+
