@@ -10,7 +10,6 @@ import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.NEW_USER;
 import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.REGULAR_USER;
@@ -59,10 +58,11 @@ public class StartMessageHandler implements UpdateHandler {
 
     private UserDto getUser(Long telegramId) {
         //TODO запрос в бэкэнд
-        return UserDto.builder()
-                .id(UUID.randomUUID())
-                .telegramId(telegramId)
-                .username("John Smith")
-                .build();
+//        return UserDto.builder()
+//                .id(UUID.randomUUID())
+//                .telegramId(telegramId)
+//                .username("John Smith")
+//                .build();
+        return null;
     }
 }

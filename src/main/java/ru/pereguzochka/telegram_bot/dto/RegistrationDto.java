@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -22,9 +23,7 @@ public class RegistrationDto {
     private UUID teacherId;
     private RegistrationType type;
     private UUID slotId;
-    private String childrenName;
-    private int childrenYear;
-    private int childrenMonth;
+    private List<ChildrenDto> children;
     private String phone;
 
     public enum RegistrationType {

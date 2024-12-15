@@ -73,7 +73,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return token;
     }
 
-    public void send(String text, ReplyKeyboard markup, Update update) {
+    public void send(String text, Update update) {
         Long chatId = -1L;
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
@@ -81,6 +81,26 @@ public class TelegramBot extends TelegramLongPollingBot {
             chatId = update.getCallbackQuery().getMessage().getChatId();
         }
 
+        SendMessage sendMessage = SendMessage.builder()
+                .text(text)
+                .chatId(chatId)
+                .parseMode("HTML")
+                .build();
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void send(String text, ReplyKeyboard markup, Update update) {
+        Long chatId = -1L;
+        if (update.hasMessage()) {
+            chatId = update.getMessage().getChatId();
+        } else if(update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+        }
 
         SendMessage sendMessage = SendMessage.builder()
                 .text(text)
@@ -91,6 +111,30 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void edit(String text, Update update) {
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
+        String callbackId = update.getCallbackQuery().getId();
+
+        EditMessageText newText = EditMessageText.builder()
+                .chatId(chatId)
+                .text(text)
+                .messageId(messageId)
+                .parseMode("HTML")
+                .build();
+
+        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackId)
+                .build();
+
+        try {
+            this.execute(newText);
+            this.execute(close);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
