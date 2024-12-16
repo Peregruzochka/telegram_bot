@@ -1,33 +1,33 @@
-package ru.pereguzochka.telegram_bot.handler.input_handler.check_data;
+package ru.pereguzochka.telegram_bot.handler.input_handler.input_child_name;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
-import ru.pereguzochka.telegram_bot.cache.UserDtoCache;
+import ru.pereguzochka.telegram_bot.cache.UserInputFlags;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.NEW_USER;
 
 @Component
 @RequiredArgsConstructor
-public class CheckDataHandler implements UpdateHandler {
-    private final TelegramBot bot;
+public class NewUserChildNameHandler implements UpdateHandler {
     private final RegistrationCache registrationCache;
-    private final CheckDataAttribute checkDataAttribute;
-    private final UserDtoCache userDtoCache;
+    private final TelegramBot bot;
+    private final InputChildNameAttribute attribute;
+    private final UserInputFlags userInputFlags;
 
     @Override
     public boolean isApplicable(Update update) {
         if (update.hasCallbackQuery()) {
             Long telegramId = update.getCallbackQuery().getFrom().getId();
             return update.getCallbackQuery().getData().startsWith("/time-slot:")
-                    && !isNewUser(telegramId)
-                    && userDtoCache.getCache().get(telegramId).getChildren().size() == 1;
+                    && isNewUser(telegramId);
         }
         return false;
     }
@@ -36,15 +36,16 @@ public class CheckDataHandler implements UpdateHandler {
     public void compute(Update update) {
         String timeSlotString = update.getCallbackQuery().getData().replace("/time-slot:", "");
         UUID timeSlotId = UUID.fromString(timeSlotString);
-        RegistrationDto registrationDto = getRegistrationDto(update);
+
+        Long telegramId = update.getCallbackQuery().getFrom().getId();
+        RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
         registrationDto.setSlotId(timeSlotId);
 
-        bot.edit(checkDataAttribute.generateText(registrationDto), checkDataAttribute.createMarkup(), update);
-    }
+        Long chatId = update.getCallbackQuery().getFrom().getId();
+        userInputFlags.getFlags().computeIfAbsent(chatId, k -> new HashMap<>());
+        userInputFlags.getFlags().get(chatId).put("input-child-name", true);
 
-    private RegistrationDto getRegistrationDto(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        return registrationCache.getCache().get(telegramId);
+        bot.edit(attribute.getText(), update);
     }
 
     private boolean isNewUser(Long telegramId) {

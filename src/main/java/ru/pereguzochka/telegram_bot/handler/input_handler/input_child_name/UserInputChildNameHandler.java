@@ -11,8 +11,6 @@ import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.handler.input_handler.input_child_birthday.InputChildBirthdayAttribute;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -53,7 +51,7 @@ public class UserInputChildNameHandler implements UpdateHandler {
                 .build();
 
         RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-        registrationDto.setChildren(new ArrayList<>(List.of(children)));
+        registrationDto.setChildren(children);
 
         userInputFlags.getFlags().get(chatId).put("input-child-birthday", true);
 

@@ -29,15 +29,15 @@ public class DateHandler implements UpdateHandler {
     public void compute(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         int week = weekCursorCache.getCache().getOrDefault(chatId, 0);
-        bot.edit(dataTimeAttribute.getText(), dataTimeAttribute.createWeekMarkup(getSlots(null, null), week), update);
+        bot.edit(dataTimeAttribute.getText(), dataTimeAttribute.createWeekMarkup(getTimeSlots(null, null), week), update);
     }
 
-    private List<TimeSlotDto> getSlots(UUID lessonId, UUID teacherId) {
-        return IntStream.range(1, 10)
+    private List<TimeSlotDto> getTimeSlots(UUID lessonId, UUID teacherId) {
+        return IntStream.range(0, 3)
                 .mapToObj(i -> TimeSlotDto.builder()
                         .id(UUID.randomUUID())
-                        .startTime(LocalDateTime.now().minusDays(i))
-                        .endTime(LocalDateTime.now().minusDays(i).plusMinutes(45))
+                        .startTime(LocalDateTime.now().plusDays(i))
+                        .endTime(LocalDateTime.now().plusDays(i).plusMinutes(45))
                         .build()
                 )
                 .toList();

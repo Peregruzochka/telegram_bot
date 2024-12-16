@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class UserInputChildBirthdayHandler implements UpdateHandler {
+public class NewUserInputChildBirthdayHandler implements UpdateHandler {
     private final UserInputFlags userInputFlags;
     private final RegistrationCache registrationCache;
     private final TelegramBot bot;
@@ -48,7 +48,7 @@ public class UserInputChildBirthdayHandler implements UpdateHandler {
         Long telegramId = update.getMessage().getFrom().getId();
 
         RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-        ChildrenDto children = registrationDto.getChildren().get(0);
+        ChildrenDto children = registrationDto.getChildren();
         children.setBirthday(userInput);
 
         userInputFlags.getFlags().get(chatId).put("input-user-name", true);

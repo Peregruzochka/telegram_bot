@@ -18,7 +18,7 @@ public class CheckDataAttribute extends BaseAttribute {
     public String createUserInfo(RegistrationDto registrationDto) {
         return "<b>Ваше имя: </b>" + registrationDto.getUsername() + "\n" +
                 "<b>Ваш номер телефона: </b>" + registrationDto.getPhone() + "\n" +
-                "<b>Ваш ребенок: </b>" + registrationDto.getChildren().get(0).getName() +
-                " <i>(" + registrationDto.getChildren().get(0).getBirthday() + ")</i>" + "\n";
+                "<b>Ваш ребенок: </b>" + registrationDto.getChildren().getName() +
+                " <i>(" + registrationDto.getChildren().getBirthday() + ")</i>" + "\n";
     }
 }

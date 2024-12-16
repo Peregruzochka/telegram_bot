@@ -118,18 +118,21 @@ attr:
 
   check-registration-data:
     text: |
-      <b>Эти данные верны?</b>
+      <b>Проверьте корректность ваших данных:</b>
       {}
+      Эти данные верны?
     buttons:
       - Да
       - Изменить свои данные
       - Изменить данные ребенка
       - Добавить ребенка
+      - « Назад к выбору даты
     callbacks:
       - /finally
       - /edit-yourself
       - /edit-children
       - /add-children
+      - /date
     
   input-child-name:
     text: |
@@ -156,3 +159,12 @@ attr:
     callbacks:
     error-text: |
       Введите корректный номер телефона:
+
+  choose-child:
+    text: |
+      Укажите какого ребенка вы хотите записать на занятие:
+    buttons:
+      - « Назад к выбору даты
+    callbacks:
+      - /date
+    child-callback: "/child:"

@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class UserInputUserNameHandler implements UpdateHandler {
+public class NewUserInputUserNameHandler implements UpdateHandler {
     private final UserInputFlags userInputFlags;
     private final RegistrationCache registrationCache;
     private final TelegramBot bot;
