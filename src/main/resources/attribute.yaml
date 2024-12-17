@@ -130,8 +130,8 @@ attr:
     callbacks:
       - /finally
       - /edit-yourself
-      - /edit-children
-      - /add-children
+      - /edit-child
+      - /add-child
       - /date
     
   input-child-name:
