@@ -1,9 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.datatime_handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -16,8 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Getter
+@Setter
 @ConfigurationProperties("attr.time-set")
-@RequiredArgsConstructor
 public class TimeAttribute extends BaseAttribute {
 
     private String timeSlotCallback;
@@ -27,7 +26,7 @@ public class TimeAttribute extends BaseAttribute {
         List<List<InlineKeyboardButton>> newKeyboard = new ArrayList<>(timeSlots.stream()
                 .map(timeSlotDto -> {
                     String buttonText = createTimeText(timeSlotDto);
-                    String callbackText = timeSlotCallback + timeSlotDto;
+                    String callbackText = timeSlotCallback + timeSlotDto.getId();
                     return List.of(createButton(buttonText, callbackText));
                 }).toList());
         newKeyboard.addAll(oldKeyboard);

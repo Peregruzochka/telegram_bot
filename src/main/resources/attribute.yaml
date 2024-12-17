@@ -114,6 +114,57 @@ attr:
       - /date
       - /connect-with-admin
 
-    time-slot-callback: "/time-slot"
+    time-slot-callback: "/time-slot:"
 
+  check-registration-data:
+    text: |
+      <b>Проверьте корректность ваших данных:</b>
+      {}
+      Эти данные верны?
+    buttons:
+      - Да
+      - Изменить свои данные
+      - Изменить данные ребенка
+      - Добавить ребенка
+      - « Назад к выбору даты
+    callbacks:
+      - /finally
+      - /edit-yourself
+      - /edit-child
+      - /add-child
+      - /date
+    
+  input-child-name:
+    text: |
+      Укажите имя ребенка:
+    buttons:
+    callbacks:
 
+  input-child-birthday:
+    text: |
+      Укажите месяц и год рождения ребенка:
+    buttons:
+    callbacks:
+
+  input-user-name:
+    text: |
+      Укажите как к вам можно обращаться:
+    buttons:
+    callbacks:
+
+  input-user-phone:
+    text: |
+      Укажите ваш номер телефона:
+    buttons:
+    callbacks:
+    error-text: |
+      Введите корректный номер телефона:
+
+  choose-child:
+    text: |
+      Укажите какого ребенка вы хотите записать на занятие:
+    buttons:
+      - « Назад к выбору даты
+    callbacks:
+      - /date
+    child-callback: "/child:"

@@ -22,9 +22,7 @@ public class RegistrationDto {
     private UUID teacherId;
     private RegistrationType type;
     private UUID slotId;
-    private String childrenName;
-    private int childrenYear;
-    private int childrenMonth;
+    private ChildrenDto children;
     private String phone;
 
     public enum RegistrationType {
