@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.cache.TimeSlotsCache;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.WeekDay;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class TimeHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final TimeAttribute timeAttribute;
+    private final TimeSlotsCache timeSlotsCache;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -36,8 +38,9 @@ public class TimeHandler implements UpdateHandler {
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             WeekDay weekDay = mapper.readValue(date, WeekDay.class);
             //todo: get from backend time slots
-
             List<TimeSlotDto> slots = getTimeslots();
+            slots.forEach(slot -> timeSlotsCache.getCache().put(slot.getId(), slot));
+
             bot.edit(timeAttribute.getText(), timeAttribute.createTimeMarkup(slots), update);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
