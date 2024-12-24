@@ -6,15 +6,15 @@ attr:
       Будем рады помочь в решении Вашего вопроса!
       Выберете действие:
     buttons:
-      - "Записаться на занятие"
-      - "Перенести занятие"
-      - "Отменить занятие"
-      - "Посмотреть предстоящие занятия"
+      - Записаться на занятие
+      - Перенести занятие
+      - Отменить занятие
+      - Посмотреть предстоящие занятия
     callbacks:
-      - "/direction"
-      - "/reschedule"
-      - "/cancel"
-      - "/view"
+      - /lessons
+      - /reschedule
+      - /cancel
+      - /view
 
   first-start:
     text: |
@@ -22,47 +22,18 @@ attr:
       Будем рады помочь в решении Вашего вопроса!
       Выберете действие:
     buttons:
-      - "Записаться на занятие"
+      - Записаться на занятие
     callbacks:
-      - "/direction"
+      - /lessons
 
-  direction:
+  lessons:
     text: |
       <b>Выберете желаемое направление</b>
     buttons:
-      - "Логопед"
-      - "Диагностика с логопедом"
-      - "Логопед-дефектолог"
-      - "Диагностика с логопедом-дефектологом"
-      - "Психолог-нейропсихолог"
-      - "Диагностика с психологом-нейропсихологом"
-      - "Развивающие занятия"
-      - "Групповые развивающие занятия"
-      - "Подготовка к школе"
-      - "Подготовка к школе в группе"
-      - "Репетитор по русскому языку для школьников"
-      - "Логопедический массаж"
-      - "Логоритмика"
-      - "Творческая мастерская"
-      - "Занятие по чистописанию и каллиграфия"
-      - "« Назад"
+      - « Назад
     callbacks:
-      - "/logoped"
-      - "/diagnostic_logoped"
-      - "/logoped_defect"
-      - "/diagnostic_logoped_defect"
-      - "/psycholog_neuropsycholog"
-      - "/diagnostic_psycholog_neuropsycholog"
-      - "/developing_classes"
-      - "/group_developing_classes"
-      - "/school_preparation"
-      - "/group_school_preparation"
-      - "/russian_language_tutor"
-      - "/logoped_massage"
-      - "/logorhythmics"
-      - "/creative_workshop"
-      - "/calligraphy"
-      - "/start"
+      - /start
+    main-callback: "/lesson:"
 
   teachers:
     text: |
@@ -205,3 +176,14 @@ attr:
       - /start
     vk-link: https://www.google.com
     tg-link: https://www.google.com
+
+  reschedule:
+    text: | 
+      Выберете дату занятия которую хотите перенести
+    buttons:
+      - « Назад
+    callbacks:
+      - /start
+
+
+

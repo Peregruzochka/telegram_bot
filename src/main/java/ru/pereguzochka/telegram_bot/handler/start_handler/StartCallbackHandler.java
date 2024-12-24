@@ -27,11 +27,11 @@ public class StartCallbackHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
-        RegistrationDto registrationDto = cache.getCache().get(telegramId);
+        RegistrationDto registrationDto = cache.get(telegramId);
         if (registrationDto.getType().equals(NEW_USER)) {
             bot.edit(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
         } else {
-            String username = registrationDto.getUsername();
+            String username = registrationDto.getUser().getName();
             bot.edit(startAttribute.createText(username), startAttribute.createMarkup(), update);
         }
     }

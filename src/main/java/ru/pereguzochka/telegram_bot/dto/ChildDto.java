@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ChildrenDto {
+public class ChildDto {
     private UUID id;
     private String name;
     private String birthday;

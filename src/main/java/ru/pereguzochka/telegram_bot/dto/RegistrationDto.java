@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.UUID;
 
@@ -16,13 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 public class RegistrationDto {
+    private UUID id;
     private Long telegramId;
-    private String username;
-    private UUID lessonId;
-    private UUID teacherId;
+    private UserDto user;
+    private ChildDto child;
+    private LessonDto lesson;
+    private TeacherDto teacher;
     private RegistrationType type;
-    private UUID slotId;
-    private ChildrenDto children;
+    private TimeSlotDto slot;
+
     private String phone;
 
     public enum RegistrationType {
