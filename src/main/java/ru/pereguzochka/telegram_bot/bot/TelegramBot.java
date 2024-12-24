@@ -21,12 +21,15 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.cache.FileIDCache;
+import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
+
+import static com.sun.org.apache.xml.internal.serializer.utils.Utils.messages;
 
 
 @Slf4j
@@ -77,7 +80,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId = -1L;
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
-        } else if(update.hasCallbackQuery()) {
+        } else if (update.hasCallbackQuery()) {
             chatId = update.getCallbackQuery().getMessage().getChatId();
         }
 
@@ -98,7 +101,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         Long chatId = -1L;
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
-        } else if(update.hasCallbackQuery()) {
+        } else if (update.hasCallbackQuery()) {
             chatId = update.getCallbackQuery().getMessage().getChatId();
         }
 
@@ -208,9 +211,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-
-    public void sendPhotos(List<String> paths, Update update) {
-        List<InputMedia> mediaPhotos = paths.stream()
+    public List<Integer> sendImages(List<ImageDto> images, Update update) {
+        List<InputMedia> mediaPhotos = images.stream()
                 .map(this::createInputMedia)
                 .toList();
 
@@ -224,37 +226,31 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             List<Message> messages = this.execute(mediaGroup);
 
-            List<Integer> messageIds = messages.stream()
+            for (int i = 0; i < images.size(); i++) {
+                UUID imageId = images.get(i).getId();
+                String telegramFileId = messages.get(i).getPhoto().get(0).getFileId();
+                fileIDCache.put(imageId, telegramFileId);
+            }
+
+            return messages.stream()
                     .map(Message::getMessageId)
                     .toList();
 
-            deletedMessageCache.getCache().computeIfAbsent(chatId, k -> new ArrayList<>()).addAll(messageIds);
-
-            Map<String, String> fileIdCache = fileIDCache.getCache();
-            for (int i = 0; i < paths.size(); i++) {
-                String path = paths.get(i);
-                String fileId = messages.get(i).getPhoto().get(0).getFileId();
-                fileIdCache.put(path, fileId);
-
-            }
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private InputMedia createInputMedia(String path) {
-        String fileId = fileIDCache.getCache().get(path);
-        if (fileId != null) {
-            return new InputMediaPhoto(fileId);
-        } else {
-            File file = new File(path);
-            return InputMediaPhoto.builder()
-                    .media("attach://" + file.getName())
-                    .isNewMedia(true)
-                    .mediaName(file.getName())
-                    .newMediaFile(file)
-                    .build();
-        }
+    private InputMedia createInputMedia(ImageDto imageDto) {
+        byte[] imageBytes = imageDto.getImage();
+        InputStream imageStream = new ByteArrayInputStream(imageBytes);
+        return InputMediaPhoto.builder()
+                .media("attach://" + imageDto.getFilename())
+                .isNewMedia(true)
+                .mediaName(imageDto.getFilename())
+                .newMediaStream(imageStream)
+                .build();
+
     }
 }
 

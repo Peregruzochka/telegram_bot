@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -31,10 +32,20 @@ public abstract class BaseAttribute {
                 .build();
     }
 
+    public InlineKeyboardMarkup generateMarkup(List<List<InlineKeyboardButton>> newButtons) {
+        InlineKeyboardMarkup markup = createMarkup();
+        List<List<InlineKeyboardButton>> oldButtons = markup.getKeyboard();
+        newButtons.addAll(oldButtons);
+        markup.setKeyboard(newButtons);
+        return markup;
+    }
+
     protected InlineKeyboardButton createButton(String text, String callback) {
         return InlineKeyboardButton.builder()
                 .text(text)
                 .callbackData(callback)
                 .build();
     }
+
+
 }

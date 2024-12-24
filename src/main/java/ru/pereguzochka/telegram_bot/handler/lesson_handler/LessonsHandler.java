@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.direction_handler;
+package ru.pereguzochka.telegram_bot.handler.lesson_handler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,8 +6,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.LessonCache;
+import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import java.util.List;
@@ -31,7 +33,6 @@ public class LessonsHandler implements UpdateHandler {
     public void compute(Update update) {
         List<LessonDto> lessons = backendServiceClient.getAllLessons();
         lessons.forEach(lesson -> lessonCache.put(lesson.getId(), lesson));
-
-        bot.edit(attribute.getText(), attribute.createMarkup(), update);
+        bot.edit(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
     }
 }

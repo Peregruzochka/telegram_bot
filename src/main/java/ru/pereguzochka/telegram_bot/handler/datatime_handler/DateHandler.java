@@ -29,17 +29,6 @@ public class DateHandler implements UpdateHandler {
     public void compute(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         int week = weekCursorCache.getCache().getOrDefault(chatId, 0);
-        bot.edit(dataTimeAttribute.getText(), dataTimeAttribute.createWeekMarkup(getTimeSlots(null, null), week), update);
-    }
-
-    private List<TimeSlotDto> getTimeSlots(UUID lessonId, UUID teacherId) {
-        return IntStream.range(0, 3)
-                .mapToObj(i -> TimeSlotDto.builder()
-                        .id(UUID.randomUUID())
-                        .startTime(LocalDateTime.now().plusDays(i))
-                        .endTime(LocalDateTime.now().plusDays(i).plusMinutes(45))
-                        .build()
-                )
-                .toList();
+        bot.edit(dataTimeAttribute.getText(), dataTimeAttribute.createWeekMarkup());
     }
 }

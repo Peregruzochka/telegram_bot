@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.direction_handler;
+package ru.pereguzochka.telegram_bot.handler.lesson_handler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,14 +19,10 @@ import java.util.List;
 public class LessonsAttribute extends BaseAttribute {
     private String mainCallback;
 
-    public InlineKeyboardMarkup generateMarkup(List<LessonDto> lessons) {
-        InlineKeyboardMarkup markup = createMarkup();
-        List<List<InlineKeyboardButton>> oldButtons = markup.getKeyboard();
-        List<List<InlineKeyboardButton>> buttons = new ArrayList<>(lessons.stream()
+    public InlineKeyboardMarkup generateLessonsKeyboard(List<LessonDto> lessons) {
+        List<List<InlineKeyboardButton>> newButtons = lessons.stream()
                 .map(lessonDto -> List.of(createButton(lessonDto.getName(), mainCallback + lessonDto.getId())))
-                .toList());
-        buttons.addAll(oldButtons);
-        markup.setKeyboard(buttons);
-        return markup;
+                .toList();
+        return generateMarkup(newButtons);
     }
 }
