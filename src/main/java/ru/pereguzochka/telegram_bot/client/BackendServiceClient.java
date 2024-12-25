@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 
 import java.util.List;
@@ -25,6 +26,11 @@ public class BackendServiceClient {
     }
 
     public ImageDto getImageById(UUID imageId) {
+        //TODO: настроить взаимодействие
+        return null;
+    }
+
+    public List<TimeSlotDto> getMonthFreeTeacherTimeSlots(UUID teacherId) {
         //TODO: настроить взаимодействие
         return null;
     }

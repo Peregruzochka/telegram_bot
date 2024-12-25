@@ -64,11 +64,11 @@ attr:
       - « Назад к выбору педагога
     callbacks:
       - /teachers
-    prev-button-text: « Предыдущая неделя
-    prev-button-callback: /changeweek-
-    next-button-text: Следующая неделя »
-    next-button-callback: /changeweek+
-    time-callback: "/time-set:"
+    last-week-button: « Предыдущая неделя
+    last-week-callback: /change-week-
+    next-week-button: Следующая неделя »
+    next-week-callback: /change-week+
+    local-date-callback: "/local-date:"
     ok-day: ✅
     not-ok-day: ❌
 

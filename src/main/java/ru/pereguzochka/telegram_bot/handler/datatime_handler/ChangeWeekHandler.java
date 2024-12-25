@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
-import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -20,34 +18,30 @@ public class ChangeWeekHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final DateAttribute attribute;
     private final WeekCursorCache cache;
+    private final TimeSlotsByDaysCache timeSlotsByDaysCache;
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/changeweek");
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/change-week");
     }
 
     @Override
     public void compute(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        Integer weak = cache.getCache().get(chatId);
+
+        Integer weak = cache.get(chatId);
         String callback = update.getCallbackQuery().getData();
         if (callback.endsWith("+")) {
             weak++;
         } else if (callback.endsWith("-")) {
             weak--;
         }
-        bot.edit(attribute.getText(), attribute.createWeekMarkup(getTimeSlots(null, null), weak), update);
-        cache.getCache().put(chatId, weak);
-    }
+        cache.put(chatId, weak);
 
-    private List<TimeSlotDto> getTimeSlots(UUID lessonId, UUID teacherId) {
-        return IntStream.range(0, 3)
-                .mapToObj(i -> TimeSlotDto.builder()
-                        .id(UUID.randomUUID())
-                        .startTime(LocalDateTime.now().plusDays(i))
-                        .endTime(LocalDateTime.now().plusDays(i).plusMinutes(45))
-                        .build()
-                )
-                .toList();
+        Long telegramId = update.getCallbackQuery().getFrom().getId();
+        List<LocalDate> actualLocalDate = timeSlotsByDaysCache.get(telegramId).keySet().stream().toList();
+
+        bot.edit(attribute.getText(), attribute.generateLocalDateMarkup(actualLocalDate, weak), update);
+
     }
 }
