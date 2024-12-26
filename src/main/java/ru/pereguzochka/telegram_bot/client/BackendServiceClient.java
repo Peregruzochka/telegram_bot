@@ -1,8 +1,10 @@
 package ru.pereguzochka.telegram_bot.client;
 
 import org.springframework.stereotype.Component;
+import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
@@ -15,6 +17,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +27,7 @@ public class BackendServiceClient {
 
     public UserDto getUserByTelegramId(Long telegramId) {
         //TODO: настроить взаимодействие с backend
-        return null;
+        return generateTestUser(telegramId);
     }
 
     public List<LessonDto> getAllLessons() {
@@ -40,6 +43,11 @@ public class BackendServiceClient {
     public List<TimeSlotDto> getMonthFreeTeacherTimeSlots(UUID teacherId) {
         //TODO: настроить взаимодействие
         return generateTestTimeSlots();
+    }
+
+    public List<RegistrationDto> getAllUserRegistrations(Long telegramId) {
+        //TODO: настроить взаимодействие
+        return generateTestRegistrations(telegramId);
     }
 
     private List<LessonDto> generateLessons() {
@@ -119,7 +127,114 @@ public class BackendServiceClient {
         }
         return timeSlots;
     }
-}
 
+    private UserDto generateTestUser(Long telegramId) {
+        return UserDto.builder()
+                .id(UUID.randomUUID()) // Генерация случайного UUID
+                .telegramId(telegramId) // Устанавливаем переданный telegramId
+                .name("Иван Иванов") // Русское имя
+                .phone("+79876543210") // Пример российского номера телефона
+                .children(Arrays.asList(
+                        ChildDto.builder()
+                                .id(UUID.randomUUID())
+                                .name("Маша") // Русское имя ребенка
+                                .birthday("2017-06-15") // Дата рождения в формате "yyyy-MM-dd"
+                                .build(),
+                        ChildDto.builder()
+                                .id(UUID.randomUUID())
+                                .name("Кирилл") // Русское имя ребенка
+                                .birthday("2019-10-22") // Дата рождения в формате "yyyy-MM-dd"
+                                .build()
+                )) // Добавляем пример списка детей
+                .build();
+    }
+
+    private List<RegistrationDto> generateTestRegistrations(Long telegramId) {
+        List<RegistrationDto> registrations = new ArrayList<>();
+        ChildDto child1 = ChildDto.builder()
+                .id(UUID.randomUUID())
+                .name("Иван Иванов")
+                .birthday("2010-05-12")
+                .build();
+
+        ChildDto child2 = ChildDto.builder()
+                .id(UUID.randomUUID())
+                .name("Мария Иванова")
+                .birthday("2012-08-24")
+                .build();
+
+        // Создание пользователя
+        UserDto user = UserDto.builder()
+                .id(UUID.randomUUID())
+                .telegramId(telegramId)
+                .name("Петр Смирнов")
+                .phone("+7 900 123-45-67")
+                .children(List.of(child1, child2))
+                .build();
+
+        // Создание преподавателя
+        TeacherDto teacher = TeacherDto.builder()
+                .id(UUID.randomUUID())
+                .name("Елена Петровна")
+                .imageID(UUID.randomUUID())
+                .build();
+
+        // Создание уроков
+        LessonDto lesson1 = LessonDto.builder()
+                .id(UUID.randomUUID())
+                .name("Математика")
+                .description("Основы алгебры")
+                .teachers(List.of(teacher))
+                .build();
+
+        LessonDto lesson2 = LessonDto.builder()
+                .id(UUID.randomUUID())
+                .name("Физика")
+                .description("Механика и силы")
+                .teachers(List.of(teacher))
+                .build();
+
+        // Создание временных слотов
+        TimeSlotDto slot1 = TimeSlotDto.builder()
+                .id(UUID.randomUUID())
+                .startTime(LocalDateTime.of(2024, 12, 27, 10, 0))
+                .endTime(LocalDateTime.of(2024, 12, 27, 11, 30))
+                .teacher(teacher)
+                .build();
+
+        TimeSlotDto slot2 = TimeSlotDto.builder()
+                .id(UUID.randomUUID())
+                .startTime(LocalDateTime.of(2024, 12, 27, 12, 0))
+                .endTime(LocalDateTime.of(2024, 12, 27, 13, 30))
+                .teacher(teacher)
+                .build();
+
+        // Создание RegistrationDto
+        RegistrationDto registration1 = RegistrationDto.builder()
+                .id(UUID.randomUUID())
+                .telegramId(user.getTelegramId())
+                .user(user)
+                .child(child1)
+                .lesson(lesson1)
+                .teacher(teacher)
+                .type(RegistrationDto.RegistrationType.NEW_USER)
+                .slot(slot1)
+                .build();
+
+        RegistrationDto registration2 = RegistrationDto.builder()
+                .id(UUID.randomUUID())
+                .telegramId(user.getTelegramId())
+                .user(user)
+                .child(child2)
+                .lesson(lesson2)
+                .teacher(teacher)
+                .type(RegistrationDto.RegistrationType.REGULAR_USER)
+                .slot(slot2)
+                .build();
+        registrations.add(registration1);
+        registrations.add(registration2);
+        return registrations;
+    }
+}
 
 

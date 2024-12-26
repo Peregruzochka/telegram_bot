@@ -35,7 +35,7 @@ public class StartMessageHandler implements UpdateHandler {
             bot.send(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
         } else {
             cache.put(telegramId, createRegistrationDtoForRegularUser(userDto));
-            bot.send(startAttribute.getText(), startAttribute.createMarkup(), update);
+            bot.send(startAttribute.createText(userDto.getName()), startAttribute.createMarkup(), update);
         }
     }
 
