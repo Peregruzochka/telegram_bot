@@ -35,8 +35,9 @@ public abstract class BaseAttribute {
     public InlineKeyboardMarkup generateMarkup(List<List<InlineKeyboardButton>> newButtons) {
         InlineKeyboardMarkup markup = createMarkup();
         List<List<InlineKeyboardButton>> oldButtons = markup.getKeyboard();
-        newButtons.addAll(oldButtons);
-        markup.setKeyboard(newButtons);
+        List<List<InlineKeyboardButton>> newButton = new ArrayList<>(newButtons);
+        newButton.addAll(oldButtons);
+        markup.setKeyboard(newButton);
         return markup;
     }
 

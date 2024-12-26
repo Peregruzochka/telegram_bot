@@ -17,7 +17,6 @@ import java.util.UUID;
 public class CheckDataAfterChooseChildHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final CheckDataAttribute checkDataAttribute;
-    private final UserDtoCache userDtoCache;
     private final RegistrationCache registrationCache;
 
     @Override
@@ -30,12 +29,14 @@ public class CheckDataAfterChooseChildHandler implements UpdateHandler {
         String callback = update.getCallbackQuery().getData();
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         UUID childId = UUID.fromString(callback.replace("/child:", ""));
-        ChildDto childDto = userDtoCache.getCache().get(telegramId).getChildren().stream()
-                .filter(child -> child.getId().equals(childId))
+
+        RegistrationDto registrationDto = registrationCache.get(telegramId);
+        ChildDto child = registrationDto.getUser().getChildren().stream()
+                .filter(childDto -> childDto.getId().equals(childId))
                 .findFirst()
                 .orElseThrow();
-        RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-        registrationDto.setChildren(childDto);
+
+        registrationDto.setChild(child);
 
         bot.edit(checkDataAttribute.generateText(registrationDto), checkDataAttribute.createMarkup(), update);
     }

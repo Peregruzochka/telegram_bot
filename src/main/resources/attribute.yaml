@@ -51,7 +51,7 @@ attr:
     buttons:
       - « Назад к выбору направления
     callbacks:
-      - /direction
+      - /lessons
     main-callbacks: "/teacher:"
 
   date:
@@ -80,7 +80,7 @@ attr:
       - Нет подходящего времени
     callbacks:
       - /date
-      - /connect-with-admin
+      - /connect-to-admin
 
     time-slot-callback: "/time-slot:"
 

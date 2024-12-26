@@ -5,8 +5,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
+import ru.pereguzochka.telegram_bot.cache.TimeSlotCache;
 import ru.pereguzochka.telegram_bot.cache.UserDtoCache;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
+import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
@@ -21,6 +23,7 @@ public class ChooseChildHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final UserDtoCache userDtoCache;
     private final ChooseChildAttribute chooseChildAttribute;
+    private final TimeSlotCache timeSlotCache;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -37,20 +40,18 @@ public class ChooseChildHandler implements UpdateHandler {
     public void compute(Update update) {
         String timeSlotString = update.getCallbackQuery().getData().replace("/time-slot:", "");
         UUID timeSlotId = UUID.fromString(timeSlotString);
-        RegistrationDto registrationDto = getRegistrationDto(update);
-        registrationDto.setSlotId(timeSlotId);
-        UserDto userDto = userDtoCache.getCache().get(registrationDto.getTelegramId());
+        TimeSlotDto timeSlotDto = timeSlotCache.get(timeSlotId);
 
-        bot.edit(chooseChildAttribute.getText(), chooseChildAttribute.generateMarkup(userDto.getChildren()), update);
+        Long telegramId = update.getCallbackQuery().getFrom().getId();
+        RegistrationDto registrationDto = registrationCache.get(telegramId);
+        registrationDto.setSlot(timeSlotDto);
+
+        UserDto userDto = registrationDto.getUser();
+        bot.edit(chooseChildAttribute.getText(), chooseChildAttribute.generateChooseChildMarkup(userDto.getChildren()), update);
     }
 
     private boolean isNewUser(Long telegramId) {
-        RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
+        RegistrationDto registrationDto = registrationCache.get(telegramId);
         return registrationDto.getType().equals(NEW_USER);
-    }
-
-    private RegistrationDto getRegistrationDto(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        return registrationCache.getCache().get(telegramId);
     }
 }

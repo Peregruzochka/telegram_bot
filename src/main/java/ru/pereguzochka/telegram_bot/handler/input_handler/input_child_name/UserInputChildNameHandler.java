@@ -28,7 +28,7 @@ public class UserInputChildNameHandler implements UpdateHandler {
         }
 
         Long chatId = update.getMessage().getChatId();
-        Map<String, Boolean> userFlags = userInputFlags.getFlags().get(chatId);
+        Map<String, Boolean> userFlags = userInputFlags.get(chatId);
         if (userFlags == null) {
             return false;
         }
@@ -40,20 +40,20 @@ public class UserInputChildNameHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         Long chatId = update.getMessage().getChatId();
-        Map<String, Boolean> userFlags = userInputFlags.getFlags().get(chatId);
+        Map<String, Boolean> userFlags = userInputFlags.get(chatId);
         userFlags.put("input-child-name", false);
 
         String userInput = update.getMessage().getText();
         Long telegramId = update.getMessage().getFrom().getId();
 
-        ChildDto children = ChildDto.builder()
+        ChildDto child = ChildDto.builder()
                 .name(userInput)
                 .build();
 
-        RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-        registrationDto.setChildren(children);
+        RegistrationDto registrationDto = registrationCache.get(telegramId);
+        registrationDto.setChild(child);
 
-        userInputFlags.getFlags().get(chatId).put("input-child-birthday", true);
+        userInputFlags.get(chatId).put("input-child-birthday", true);
 
         bot.send(childBirthdayAttribute.getText(), update);
     }

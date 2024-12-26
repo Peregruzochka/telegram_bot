@@ -30,8 +30,7 @@ public class TimeHandler implements UpdateHandler {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
 
         List<TimeSlotDto> actualSlots = timeSlotsByDaysCache.get(telegramId).get(localDate);
-
-
+        bot.edit(timeAttribute.getText(), timeAttribute.createTimeMarkup(actualSlots), update);
     }
 
 }

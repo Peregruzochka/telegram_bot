@@ -26,8 +26,6 @@ public class RegistrationDto {
     private RegistrationType type;
     private TimeSlotDto slot;
 
-    private String phone;
-
     public enum RegistrationType {
         NEW_USER,
         REGULAR_USER,

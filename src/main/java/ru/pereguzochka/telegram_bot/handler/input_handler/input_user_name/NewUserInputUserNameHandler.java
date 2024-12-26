@@ -7,6 +7,7 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.UserInputFlags;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
+import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.handler.input_handler.input_user_phone.InputUserPhoneAttribute;
 
@@ -28,7 +29,7 @@ public class NewUserInputUserNameHandler implements UpdateHandler {
         }
 
         Long chatId = update.getMessage().getChatId();
-        Map<String, Boolean> userFlags = userInputFlags.getFlags().get(chatId);
+        Map<String, Boolean> userFlags = userInputFlags.get(chatId);
         if (userFlags == null) {
             return false;
         }
@@ -41,15 +42,19 @@ public class NewUserInputUserNameHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         Long chatId = update.getMessage().getChatId();
-        userInputFlags.getFlags().get(chatId).put("input-user-name", false);
+        userInputFlags.get(chatId).put("input-user-name", false);
 
         String userInput = update.getMessage().getText();
         Long telegramId = update.getMessage().getFrom().getId();
 
-        RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-        registrationDto.setUsername(userInput);
+        UserDto user = UserDto.builder()
+                .name(userInput)
+                .build();
 
-        userInputFlags.getFlags().get(chatId).put("input-user-phone", true);
+        RegistrationDto registrationDto = registrationCache.get(telegramId);
+        registrationDto.setUser(user);
+
+        userInputFlags.get(chatId).put("input-user-phone", true);
         bot.send(inputUserPhoneAttribute.getText(), update);
     }
 }

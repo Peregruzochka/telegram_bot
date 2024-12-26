@@ -51,7 +51,6 @@ public class StartMessageHandler implements UpdateHandler {
                 .telegramId(userDto.getTelegramId())
                 .user(userDto)
                 .type(REGULAR_USER)
-                .phone(userDto.getPhone())
                 .build();
     }
 }

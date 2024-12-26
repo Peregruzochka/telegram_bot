@@ -66,6 +66,7 @@ public class ChooseTeacherAndDateHandler implements UpdateHandler {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         List<Integer> deletedMessage = deletedMessageCache.get(chatId);
         deletedMessage.forEach(messageId -> bot.delete(messageId, chatId));
+        deletedMessageCache.remove(chatId);
 
         List<LocalDate> actualLocalDate = timeSlotsByDays.keySet().stream().toList();
 

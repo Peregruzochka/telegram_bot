@@ -38,7 +38,7 @@ public class DateAttribute extends BaseAttribute {
         List<List<InlineKeyboardButton>> newButtons = new ArrayList<>(currentWeek.stream()
                 .map(localDate -> {
                     String buttonText = localDateToString(localDate) + " " + isOkDay(localDate, actualLocalDates);
-                    String callback = localDateCallback + " " + localDate;
+                    String callback = localDateCallback + localDate;
                     return List.of(createButton(buttonText, callback));
                 })
                 .toList());

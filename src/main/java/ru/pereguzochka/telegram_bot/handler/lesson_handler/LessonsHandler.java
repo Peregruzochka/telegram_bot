@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.cache.LessonCache;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
@@ -23,6 +24,7 @@ public class LessonsHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final BackendServiceClient backendServiceClient;
     private final LessonCache lessonCache;
+    private final DeletedMessageCache deletedMessageCache;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -31,6 +33,13 @@ public class LessonsHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        List<Integer> deletedMessage = deletedMessageCache.get(chatId);
+        if (deletedMessage != null && !deletedMessage.isEmpty()) {
+            deletedMessage.forEach(messageId -> bot.delete(messageId, chatId));
+            deletedMessageCache.remove(chatId);
+        }
+
         List<LessonDto> lessons = backendServiceClient.getAllLessons();
         lessons.forEach(lesson -> lessonCache.put(lesson.getId(), lesson));
         bot.edit(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);

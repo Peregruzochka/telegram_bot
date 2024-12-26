@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
-import static com.sun.org.apache.xml.internal.serializer.utils.Utils.messages;
 
 
 @Slf4j
@@ -170,15 +169,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             this.execute(newText);
             this.execute(newKb);
             this.execute(close);
-            if (deletedMessageCache.getCache().containsKey(chatId)) {
-                List<Integer> messagesIds = deletedMessageCache.getCache().get(chatId);
-                deletedMessageCache.getCache().remove(chatId);
-                DeleteMessages deleteMessages = DeleteMessages.builder()
-                        .chatId(chatId)
-                        .messageIds(messagesIds)
-                        .build();
-                this.execute(deleteMessages);
-            }
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
@@ -242,15 +232,22 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private InputMedia createInputMedia(ImageDto imageDto) {
-        byte[] imageBytes = imageDto.getImage();
-        InputStream imageStream = new ByteArrayInputStream(imageBytes);
-        return InputMediaPhoto.builder()
-                .media("attach://" + imageDto.getFilename())
-                .isNewMedia(true)
-                .mediaName(imageDto.getFilename())
-                .newMediaStream(imageStream)
-                .build();
-
+        if (!fileIDCache.contains(imageDto.getId())) {
+            byte[] imageBytes = imageDto.getImage();
+            InputStream imageStream = new ByteArrayInputStream(imageBytes);
+            return InputMediaPhoto.builder()
+                    .media("attach://" + imageDto.getFilename())
+                    .isNewMedia(true)
+                    .mediaName(imageDto.getFilename())
+                    .newMediaStream(imageStream)
+                    .build();
+        } else {
+            String telegramFileId = fileIDCache.get(imageDto.getId());
+            return InputMediaPhoto.builder()
+                    .media(telegramFileId)
+                    .isNewMedia(false)
+                    .build();
+        }
     }
 }
 
