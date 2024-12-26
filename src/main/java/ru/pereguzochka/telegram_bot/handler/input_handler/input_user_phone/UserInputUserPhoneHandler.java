@@ -30,7 +30,7 @@ public class UserInputUserPhoneHandler implements UpdateHandler {
         }
 
         Long chatId = update.getMessage().getChatId();
-        Map<String, Boolean> userFlags = userInputFlags.getFlags().get(chatId);
+        Map<String, Boolean> userFlags = userInputFlags.get(chatId);
         if (userFlags == null) {
             return false;
         }
@@ -42,18 +42,18 @@ public class UserInputUserPhoneHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         Long chatId = update.getMessage().getChatId();
-        userInputFlags.getFlags().get(chatId).put("input-user-phone", false);
+        userInputFlags.get(chatId).put("input-user-phone", false);
 
         String phone = update.getMessage().getText();
         if (phoneNumberValidator.isValidPhoneNumber(phone))  {
             Long telegramId = update.getMessage().getFrom().getId();
 
-            RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-            registrationDto.setPhone(phone);
+            RegistrationDto registrationDto = registrationCache.get(telegramId);
+            registrationDto.getUser().setPhone(phone);
 
             bot.send(checkDataAttribute.generateText(registrationDto), checkDataAttribute.createMarkup(), update);
         } else {
-            userInputFlags.getFlags().get(chatId).put("input-user-phone", true);
+            userInputFlags.get(chatId).put("input-user-phone", true);
             bot.send(attribute.getErrorText(), update);
         }
     }

@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.UserInputFlags;
-import ru.pereguzochka.telegram_bot.dto.ChildrenDto;
+import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.handler.input_handler.check_data.CheckDataAttribute;
@@ -29,7 +29,7 @@ public class UserEditChildBirthdayHandler implements UpdateHandler {
         }
 
         Long chatId = update.getMessage().getChatId();
-        Map<String, Boolean> userFlags = userInputFlags.getFlags().get(chatId);
+        Map<String, Boolean> userFlags = userInputFlags.get(chatId);
         if (userFlags == null) {
             return false;
         }
@@ -41,14 +41,14 @@ public class UserEditChildBirthdayHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         Long chatId = update.getMessage().getChatId();
-        Map<String, Boolean> userFlags = userInputFlags.getFlags().get(chatId);
+        Map<String, Boolean> userFlags = userInputFlags.get(chatId);
         userFlags.put("edit-child-birthday", false);
 
         String userInput = update.getMessage().getText();
         Long telegramId = update.getMessage().getFrom().getId();
 
-        RegistrationDto registrationDto = registrationCache.getCache().get(telegramId);
-        ChildrenDto children = registrationDto.getChildren();
+        RegistrationDto registrationDto = registrationCache.get(telegramId);
+        ChildDto children = registrationDto.getChild();
         children.setBirthday(userInput);
 
         bot.send(checkDataAttribute.generateText(registrationDto), checkDataAttribute.createMarkup(), update);

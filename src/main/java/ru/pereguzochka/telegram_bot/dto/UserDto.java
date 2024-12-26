@@ -17,7 +17,7 @@ import java.util.UUID;
 public class UserDto {
     private UUID id;
     private Long telegramId;
-    private String username;
+    private String name;
     private String phone;
-    private List<ChildrenDto> children;
+    private List<ChildDto> children;
 }

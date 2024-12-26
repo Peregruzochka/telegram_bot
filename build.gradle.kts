@@ -3,6 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.3.4"
 	id("io.spring.dependency-management") version "1.1.6"
 }
+val springCloudVersion by extra("2023.0.4")
 
 group = "ru.pereguzochka"
 version = "0.0.1-SNAPSHOT"
@@ -28,7 +29,9 @@ dependencies {
 	 * SpringBoot
 	 */
 	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("io.projectreactor:reactor-test")
 
 	/**
 	 * Utils
@@ -49,6 +52,11 @@ dependencies {
 
 
 
+}
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+	}
 }
 
 tasks.withType<Test> {

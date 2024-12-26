@@ -22,15 +22,13 @@ public class TimeAttribute extends BaseAttribute {
     private String timeSlotCallback;
 
     public InlineKeyboardMarkup createTimeMarkup(List<TimeSlotDto> timeSlots) {
-        List<List<InlineKeyboardButton>> oldKeyboard = createMarkup().getKeyboard();
         List<List<InlineKeyboardButton>> newKeyboard = new ArrayList<>(timeSlots.stream()
                 .map(timeSlotDto -> {
                     String buttonText = createTimeText(timeSlotDto);
                     String callbackText = timeSlotCallback + timeSlotDto.getId();
                     return List.of(createButton(buttonText, callbackText));
                 }).toList());
-        newKeyboard.addAll(oldKeyboard);
-        return new InlineKeyboardMarkup(newKeyboard);
+        return generateMarkup(newKeyboard);
     }
 
     private String createTimeText(TimeSlotDto timeSlotDto) {

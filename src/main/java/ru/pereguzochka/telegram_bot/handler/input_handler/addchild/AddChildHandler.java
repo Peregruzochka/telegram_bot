@@ -24,9 +24,11 @@ public class AddChildHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        userInputFlags.getFlags().computeIfAbsent(telegramId, k -> new HashMap<>());
-        userInputFlags.getFlags().get(telegramId).put("add-child-name", true);
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        if (!userInputFlags.contains(chatId)) {
+            userInputFlags.put(chatId, new HashMap<>());
+        }
+        userInputFlags.get(chatId).put("add-child-name", true);
         bot.edit(inputChildNameAttribute.getText(), inputChildNameAttribute.createMarkup(), update);
     }
 }

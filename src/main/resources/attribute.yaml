@@ -6,15 +6,15 @@ attr:
       Будем рады помочь в решении Вашего вопроса!
       Выберете действие:
     buttons:
-      - "Записаться на занятие"
-      - "Перенести занятие"
-      - "Отменить занятие"
-      - "Посмотреть предстоящие занятия"
+      - Записаться на занятие
+      - Перенести занятие
+      - Отменить занятие
+      - Посмотреть предстоящие занятия
     callbacks:
-      - "/direction"
-      - "/reschedule"
-      - "/cancel"
-      - "/view"
+      - /lessons
+      - /reschedule
+      - /cancel
+      - /view
 
   first-start:
     text: |
@@ -22,47 +22,28 @@ attr:
       Будем рады помочь в решении Вашего вопроса!
       Выберете действие:
     buttons:
-      - "Записаться на занятие"
+      - Записаться на занятие
     callbacks:
-      - "/direction"
+      - /lessons
 
-  direction:
+  lessons:
     text: |
       <b>Выберете желаемое направление</b>
     buttons:
-      - "Логопед"
-      - "Диагностика с логопедом"
-      - "Логопед-дефектолог"
-      - "Диагностика с логопедом-дефектологом"
-      - "Психолог-нейропсихолог"
-      - "Диагностика с психологом-нейропсихологом"
-      - "Развивающие занятия"
-      - "Групповые развивающие занятия"
-      - "Подготовка к школе"
-      - "Подготовка к школе в группе"
-      - "Репетитор по русскому языку для школьников"
-      - "Логопедический массаж"
-      - "Логоритмика"
-      - "Творческая мастерская"
-      - "Занятие по чистописанию и каллиграфия"
-      - "« Назад"
+      - « Назад
     callbacks:
-      - "/logoped"
-      - "/diagnostic_logoped"
-      - "/logoped_defect"
-      - "/diagnostic_logoped_defect"
-      - "/psycholog_neuropsycholog"
-      - "/diagnostic_psycholog_neuropsycholog"
-      - "/developing_classes"
-      - "/group_developing_classes"
-      - "/school_preparation"
-      - "/group_school_preparation"
-      - "/russian_language_tutor"
-      - "/logoped_massage"
-      - "/logorhythmics"
-      - "/creative_workshop"
-      - "/calligraphy"
-      - "/start"
+      - /start
+    main-callback: "/lesson-description:"
+
+  lesson-description:
+    text: | 
+      <b>{}</b>
+    buttons:
+      - Продолжить запись »
+      - « Назад
+    callbacks:
+      - /teachers
+      - /lessons
 
   teachers:
     text: |
@@ -70,21 +51,8 @@ attr:
     buttons:
       - « Назад к выбору направления
     callbacks:
-      - /direction
-
-    # добавить значения при добавлении преподавателя
-    uuids:
-      - 8ea4bc97-48fc-4787-943e-36ac42baa060
-      - fa8ed56d-a8da-431b-986c-eab37130b5eb
-      - 6e0fe30e-be0a-4ad4-a84e-1ee627e2740c
-    paths:
-      - src/main/resources/photo/teacher/teacher1.jpg
-      - src/main/resources/photo/teacher/teacher2.jpg
-      - src/main/resources/photo/teacher/teacher3.jpg
-    teacher-callbacks:
-      - /teacher1
-      - /teacher2
-      - /teacher3
+      - /lessons
+    main-callbacks: "/teacher:"
 
   date:
     text: |
@@ -96,11 +64,11 @@ attr:
       - « Назад к выбору педагога
     callbacks:
       - /teachers
-    prev-button-text: « Предыдущая неделя
-    prev-button-callback: /changeweek-
-    next-button-text: Следующая неделя »
-    next-button-callback: /changeweek+
-    time-callback: "/time-set:"
+    last-week-button: « Предыдущая неделя
+    last-week-callback: /change-week-
+    next-week-button: Следующая неделя »
+    next-week-callback: /change-week+
+    local-date-callback: "/local-date:"
     ok-day: ✅
     not-ok-day: ❌
 
@@ -112,7 +80,7 @@ attr:
       - Нет подходящего времени
     callbacks:
       - /date
-      - /connect-with-admin
+      - /connect-to-admin
 
     time-slot-callback: "/time-slot:"
 
@@ -205,3 +173,14 @@ attr:
       - /start
     vk-link: https://www.google.com
     tg-link: https://www.google.com
+
+  reschedule:
+    text: | 
+      Выберете дату занятия которую хотите перенести
+    buttons:
+      - « Назад
+    callbacks:
+      - /start
+
+
+

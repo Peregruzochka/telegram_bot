@@ -25,9 +25,11 @@ public class EditYourselfHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        userInputFlags.getFlags().computeIfAbsent(telegramId, k -> new HashMap<>());
-        userInputFlags.getFlags().get(telegramId).put("input-user-name", true);
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+        if (!userInputFlags.contains(chatId)) {
+            userInputFlags.put(chatId, new HashMap<>());
+        }
+        userInputFlags.get(chatId).put("input-user-name", true);
         bot.edit(inputUserNameAttribute.getText(), inputUserNameAttribute.createMarkup(), update);
     }
 }
