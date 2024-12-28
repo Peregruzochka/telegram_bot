@@ -29,6 +29,7 @@ public class RegistrationDto {
     public enum RegistrationType {
         NEW_USER,
         REGULAR_USER,
-        RE_REGISTRATION
+        RE_REGISTRATION,
+        CANCEL
     }
 }

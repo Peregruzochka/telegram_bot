@@ -180,5 +180,48 @@ attr:
       - /start
     re-registration-callback: "/re:"
 
+  cancel:
+    text: |
+      Выберите дату занятия, которое хотите отменить:
+      {}
+    buttons:
+      - « Назад
+    callbacks:
+      - /start
+    cancel-callback: "/cancel-registration:"
 
+  choose-case:
+    text: |
+      Выберете причину отмены занятия:
+    buttons:
+      - Болезнь
+      - Семейные обстоятельства
+      - Отпуск
+      - Нет подходящего
+      - « Назад
+    callbacks:
+      - /ill
+      - /family-reasons
+      - /vacation
+      - /other-reasons
+      - /cancel
+
+  cancel-finish:
+    text: |
+      Ваше занятие было отменено
+      {}
+
+      Если у вас остались вопросы, то нажмите на кнопку
+    buttons:
+      - Кнопка
+      - Главное меню
+    callbacks:
+      - /connect-to-admin
+      - /start
+
+  other-reasons-input:
+    text: | 
+      Введите вашу причину:
+    buttons:
+    callbacks:
 
