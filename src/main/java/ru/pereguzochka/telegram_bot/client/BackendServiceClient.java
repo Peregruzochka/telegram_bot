@@ -235,6 +235,11 @@ public class BackendServiceClient {
         registrations.add(registration2);
         return registrations;
     }
+
+    public void postRegistration(RegistrationDto registrationDto) {
+        //TODO настроить взаимодействие
+        //TODO количество попыток 3
+    }
 }
 
 
