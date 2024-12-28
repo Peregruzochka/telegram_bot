@@ -225,3 +225,12 @@ attr:
     buttons:
     callbacks:
 
+  search-user-registration:
+    text: | 
+      Ваши ближайшие занятия:
+      {}
+    buttons:
+      - « Назад
+    callbacks:
+      - /start
+
