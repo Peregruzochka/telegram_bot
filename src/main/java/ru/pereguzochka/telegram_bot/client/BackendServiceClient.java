@@ -11,7 +11,6 @@ import ru.pereguzochka.telegram_bot.dto.UserDto;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -239,6 +238,10 @@ public class BackendServiceClient {
     public void postRegistration(RegistrationDto registrationDto) {
         //TODO настроить взаимодействие
         //TODO количество попыток 3
+    }
+
+    public void cancelRegistration(RegistrationDto registrationDto, String caseDescription) {
+        //TODO настроить взаимодейсвие
     }
 }
 
