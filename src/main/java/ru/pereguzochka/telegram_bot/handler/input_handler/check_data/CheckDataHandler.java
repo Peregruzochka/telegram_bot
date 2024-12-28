@@ -21,7 +21,6 @@ public class CheckDataHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final RegistrationCache registrationCache;
     private final CheckDataAttribute checkDataAttribute;
-    private final UserDtoCache userDtoCache;
     private final TimeSlotCache timeSlotCache;
 
     @Override
@@ -30,7 +29,7 @@ public class CheckDataHandler implements UpdateHandler {
             Long telegramId = update.getCallbackQuery().getFrom().getId();
             return update.getCallbackQuery().getData().startsWith("/time-slot:")
                     && !isNewUser(telegramId)
-                    && userDtoCache.getCache().get(telegramId).getChildren().size() == 1;
+                    && registrationCache.get(telegramId).getUser().getChildren().size() == 1;
         }
         return false;
     }

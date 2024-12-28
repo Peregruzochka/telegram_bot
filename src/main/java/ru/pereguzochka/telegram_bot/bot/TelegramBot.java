@@ -1,5 +1,9 @@
 package ru.pereguzochka.telegram_bot.bot;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -9,7 +13,6 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessages;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -24,11 +27,6 @@ import ru.pereguzochka.telegram_bot.cache.FileIDCache;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
-
 
 
 @Slf4j
@@ -42,15 +40,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final List<UpdateHandler> handlers;
     private final FileIDCache fileIDCache;
-    private final DeletedMessageCache deletedMessageCache;
-
 
     public TelegramBot(@Lazy List<UpdateHandler> handlers,
                        FileIDCache fileIDCache,
                        DeletedMessageCache deletedMessageCache) {
         this.handlers = handlers;
         this.fileIDCache = fileIDCache;
-        this.deletedMessageCache = deletedMessageCache;
     }
 
     @Override

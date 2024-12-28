@@ -21,7 +21,6 @@ import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.
 public class ChooseChildHandler implements UpdateHandler {
     private final RegistrationCache registrationCache;
     private final TelegramBot bot;
-    private final UserDtoCache userDtoCache;
     private final ChooseChildAttribute chooseChildAttribute;
     private final TimeSlotCache timeSlotCache;
 
@@ -31,7 +30,7 @@ public class ChooseChildHandler implements UpdateHandler {
             Long telegramId = update.getCallbackQuery().getFrom().getId();
             return update.getCallbackQuery().getData().startsWith("/time-slot:")
                     && !isNewUser(telegramId)
-                    && userDtoCache.getCache().get(telegramId).getChildren().size() > 1;
+                    && registrationCache.get(telegramId).getUser().getChildren().size() > 1;
         }
         return false;
     }
