@@ -9,6 +9,7 @@ import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.cache.LessonCache;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -23,6 +24,7 @@ public class LessonsHandler implements UpdateHandler {
     private final LessonsAttribute attribute;
     private final TelegramBot bot;
     private final BackendServiceClient backendServiceClient;
+    private final BotBackendClient botBackendClient;
     private final LessonCache lessonCache;
     private final DeletedMessageCache deletedMessageCache;
 
@@ -40,7 +42,7 @@ public class LessonsHandler implements UpdateHandler {
             deletedMessageCache.remove(chatId);
         }
 
-        List<LessonDto> lessons = backendServiceClient.getAllLessons();
+        List<LessonDto> lessons = botBackendClient.getAllLessons();
         lessons.forEach(lesson -> lessonCache.put(lesson.getId(), lesson));
         bot.edit(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
     }
