@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -22,6 +23,7 @@ public class StartMessageHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final RegistrationCache cache;
     private final BackendServiceClient backendServiceClient;
+    private final BotBackendClient botBackendClient;
 
     public boolean isApplicable(Update update) {
         return update.hasMessage() && update.getMessage().getText().equals("/start");
@@ -29,7 +31,7 @@ public class StartMessageHandler implements UpdateHandler {
 
     public void compute(Update update) {
         Long telegramId = update.getMessage().getFrom().getId();
-        UserDto userDto = backendServiceClient.getUserByTelegramId(telegramId);
+        UserDto userDto = botBackendClient.getUserByTelegramId(telegramId);
         if (userDto == null) {
             cache.put(telegramId, createRegistrationDtoForNewUser(telegramId));
             bot.send(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);

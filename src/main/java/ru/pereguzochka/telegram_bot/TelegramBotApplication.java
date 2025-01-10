@@ -12,7 +12,7 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 
 @SpringBootApplication
 @RequiredArgsConstructor
-@EnableFeignClients
+@EnableFeignClients(basePackages = "ru.pereguzochka.telegram_bot.client")
 public class TelegramBotApplication {
 	private final TelegramBot bot;
 
