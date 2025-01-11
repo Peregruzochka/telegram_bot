@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 
 import java.util.List;
@@ -21,4 +22,7 @@ public interface BotBackendClient {
 
     @GetMapping("/images/{image-id}")
     ImageDto getImageById(@PathVariable(name = "image-id") UUID imageId);
+
+    @GetMapping("/timeslots/next-month-search")
+    List<TimeSlotDto> getTeacherTimeSlotsInNextMonth(@RequestParam("teacher-id") UUID teacherId);
 }

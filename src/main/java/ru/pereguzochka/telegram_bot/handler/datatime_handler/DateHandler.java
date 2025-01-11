@@ -8,6 +8,7 @@ import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
@@ -28,6 +29,7 @@ public class DateHandler implements UpdateHandler {
     private final RegistrationCache registrationCache;
     private final TimeSlotsByDaysCache timeSlotsByDaysCache;
     private final DateAttribute dataTimeAttribute;
+    private final BotBackendClient backendClient;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -43,7 +45,7 @@ public class DateHandler implements UpdateHandler {
 
         UUID teacherId = registrationCache.get(telegramId).getTeacher().getId();
 
-        List<TimeSlotDto> timeSlots = backendServiceClient.getMonthFreeTeacherTimeSlots(teacherId);
+        List<TimeSlotDto> timeSlots = backendClient.getTeacherTimeSlotsInNextMonth(teacherId);
         Map<LocalDate, List<TimeSlotDto>> timeSlotsByDays = timeSlots.stream()
                 .collect(groupingBy(slot -> slot.getStartTime().toLocalDate(), toList()));
 

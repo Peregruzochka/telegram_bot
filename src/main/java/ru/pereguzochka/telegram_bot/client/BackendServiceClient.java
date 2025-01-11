@@ -39,7 +39,7 @@ public class BackendServiceClient {
         return getTestImageById(imageId);
     }
 
-    public List<TimeSlotDto> getMonthFreeTeacherTimeSlots(UUID teacherId) {
+    public List<TimeSlotDto> getTeacherTimeSlotsInNextMonth(UUID teacherId) {
         //TODO: настроить взаимодействие
         return generateTestTimeSlots();
     }
@@ -118,7 +118,7 @@ public class BackendServiceClient {
                         .id(UUID.randomUUID())
                         .startTime(startTime)
                         .endTime(endTime)
-                        .teacher(null) // Пример без указания преподавателя, можно заменить на конкретного
+                        .teacherId(UUID.randomUUID())
                         .build();
 
                 timeSlots.add(timeSlot);
@@ -198,14 +198,14 @@ public class BackendServiceClient {
                 .id(UUID.randomUUID())
                 .startTime(LocalDateTime.of(2024, 12, 27, 10, 0))
                 .endTime(LocalDateTime.of(2024, 12, 27, 11, 30))
-                .teacher(teacher)
+                .teacherId(UUID.randomUUID())
                 .build();
 
         TimeSlotDto slot2 = TimeSlotDto.builder()
                 .id(UUID.randomUUID())
                 .startTime(LocalDateTime.of(2024, 12, 27, 12, 0))
                 .endTime(LocalDateTime.of(2024, 12, 27, 13, 30))
-                .teacher(teacher)
+                .teacherId(UUID.randomUUID())
                 .build();
 
         // Создание RegistrationDto

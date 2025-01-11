@@ -18,5 +18,5 @@ public class TimeSlotDto {
     private UUID id;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private TeacherDto teacher;
+    private UUID teacherId;
 }

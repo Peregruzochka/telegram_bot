@@ -10,6 +10,7 @@ import ru.pereguzochka.telegram_bot.cache.TimeSlotCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
@@ -36,6 +37,7 @@ public class ChooseTeacherAndDateHandler implements UpdateHandler {
     private final TimeSlotCache timeSlotCache;
     private final DeletedMessageCache deletedMessageCache;
     private final WeekCursorCache weekCursorCache;
+    private final BotBackendClient backendClient;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -54,7 +56,7 @@ public class ChooseTeacherAndDateHandler implements UpdateHandler {
                 .findFirst().orElseThrow();
         registrationDto.setTeacher(teacherDto);
 
-        List<TimeSlotDto> timeSlots = backendServiceClient.getMonthFreeTeacherTimeSlots(teacherId);
+        List<TimeSlotDto> timeSlots = backendClient.getTeacherTimeSlotsInNextMonth(teacherId);
 
         timeSlots.forEach(timeSlot -> timeSlotCache.put(timeSlot.getId(), timeSlot));
 
