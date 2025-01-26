@@ -7,6 +7,7 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotCache;
 import ru.pereguzochka.telegram_bot.cache.UserDtoCache;
+import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -43,6 +44,8 @@ public class CheckDataHandler implements UpdateHandler {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         RegistrationDto registrationDto = registrationCache.get(telegramId);
         registrationDto.setSlot(timeSlotDto);
+        ChildDto childDto = registrationDto.getUser().getChildren().get(0);
+        registrationDto.setChild(childDto);
 
         bot.edit(checkDataAttribute.generateText(registrationDto), checkDataAttribute.createMarkup(), update);
     }
