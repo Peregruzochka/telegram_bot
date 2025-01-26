@@ -10,6 +10,6 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 @ConfigurationProperties(prefix = "attr.lesson-description")
 public class LessonDescriptionAttribute extends BaseAttribute {
     public String generateText(LessonDto lesson) {
-        return getText().replace("{}", lesson.getName()) + "\n" + lesson.getDescription();
+        return getText().replace("{}", "👣" + lesson.getName() + "👣" + "\n\n" + lesson.getDescription());
     }
 }

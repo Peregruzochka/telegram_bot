@@ -1,8 +1,7 @@
 attr:
   start:
     text: |
-      <b>Здравствуйте!</b>
-      <i>{}</i>
+      <b>Здравствуйте, {}!</b>
       Будем рады помочь в решении Вашего вопроса!
       Выберете действие:
     buttons:
@@ -56,14 +55,16 @@ attr:
 
   date:
     text: |
-      ✅ - дни, когда запись доступна
-      ❌ - дни, когда запись недоступна
+      ✅ - вы можете записаться на занятие в этот день
+      ❌ - к сожалению, педагог уже занят
       
       <b>Выберите дату занятия:</b>
     buttons:
       - « Назад к выбору педагога
+      - Нет подходящего времени
     callbacks:
       - /teachers
+      - /connect-to-admin
     last-week-button: « Предыдущая неделя
     last-week-callback: /change-week-
     next-week-button: Следующая неделя »
@@ -156,19 +157,21 @@ attr:
 
   connect-to-admin:
     text: |
-      Свяжитесь с администратором, мы постараемся решить вашу проблему
+      Свяжитесь с нами мы постараемся помочь вам
 
-      Свяжитесь с нами в whatsapp или по номеру телефона +7000000000
     buttons:
       - Написать сообщение в VK
       - Написать сообщение в Telegram
+      - Написать сообщение в WhatsApp
       - В главное меню
     callbacks:
       - /vk
       - /tg
+      - /wa
       - /start
-    vk-link: https://www.google.com
-    tg-link: https://www.google.com
+    vk-link: https://vk.com/im?media=&sel=-212891582
+    tg-link: https://t.me/vtannik
+    wa-link: https://wa.me/79531626429
 
   re-registration:
     text: | 

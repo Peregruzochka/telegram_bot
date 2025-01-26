@@ -16,6 +16,7 @@ import java.util.Objects;
 public class ConnectToAdminAttribute extends BaseAttribute {
     private String vkLink;
     private String tgLink;
+    private String waLink;
 
     @Override
     protected InlineKeyboardButton createButton(String text, String callback) {
@@ -27,6 +28,8 @@ public class ConnectToAdminAttribute extends BaseAttribute {
             inlineKeyboardButton.url(vkLink);
         } else if (Objects.equals(callback, "/tg")) {
             inlineKeyboardButton.url(tgLink);
+        } else if (Objects.equals(callback, "/wa")) {
+            inlineKeyboardButton.url(waLink);
         }
 
         return inlineKeyboardButton.build();
