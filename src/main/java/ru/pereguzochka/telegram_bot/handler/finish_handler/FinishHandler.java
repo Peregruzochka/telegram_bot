@@ -6,8 +6,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
+import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 @Component
@@ -17,6 +19,7 @@ public class FinishHandler implements UpdateHandler {
     private final RegistrationCache registrationCache;
     private final FinishAttribute finishAttribute;
     private final BackendServiceClient backendServiceClient;
+    private final BotBackendClient botBackendClient;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -28,8 +31,11 @@ public class FinishHandler implements UpdateHandler {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         RegistrationDto registrationDto = registrationCache.get(telegramId);
         TimeSlotDto slot = registrationDto.getSlot();
+        UserDto userDto = registrationDto.getUser();
+        userDto.setTelegramId(telegramId);
 
-        backendServiceClient.postRegistration(registrationDto);
+        botBackendClient.addRegistration(registrationDto);
+        registrationCache.remove(telegramId);
 
         bot.edit(finishAttribute.generateText(slot), finishAttribute.createMarkup(), update);
     }
