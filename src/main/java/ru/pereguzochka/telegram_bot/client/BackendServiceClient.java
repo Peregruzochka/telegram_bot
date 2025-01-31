@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.client;
 
 import org.springframework.stereotype.Component;
+import ru.pereguzochka.telegram_bot.dto.CancelDto;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
@@ -240,7 +241,7 @@ public class BackendServiceClient {
         //TODO количество попыток 3
     }
 
-    public void cancelRegistration(RegistrationDto registrationDto, String caseDescription) {
+    public void cancelRegistration(CancelDto cancelDto) {
         //TODO настроить взаимодейсвие
     }
 }

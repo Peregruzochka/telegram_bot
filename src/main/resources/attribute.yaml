@@ -182,6 +182,8 @@ attr:
     callbacks:
       - /start
     re-registration-callback: "/re:"
+    empty-registration-text: | 
+      Вы не записаны не на одно занятие
 
   cancel:
     text: |
@@ -192,6 +194,8 @@ attr:
     callbacks:
       - /start
     cancel-callback: "/cancel-registration:"
+    empty-registration-text: |
+      Вы не записаны не на одно занятие
 
   choose-case:
     text: |
@@ -236,4 +240,6 @@ attr:
       - « Назад
     callbacks:
       - /start
+    empty-registration-text: |
+      Вы не записаны не на одно занятие
 

@@ -20,9 +20,15 @@ import java.util.Locale;
 @ConfigurationProperties(prefix = "attr.re-registration")
 public class ReRegistrationAttribute extends BaseAttribute {
     private String reRegistrationCallback;
+    private String emptyRegistrationText;
 
     public String generateText(List<RegistrationDto> registrations) {
         String text = getText();
+        if (registrations == null || registrations.isEmpty()) {
+            text = emptyRegistrationText;
+            return text;
+        }
+
         StringBuilder textBuilder = new StringBuilder();
         for (RegistrationDto registration : registrations) {
             textBuilder.append("<b>").append(timeSlotToString(registration.getSlot())).append("</b>").append("\n");

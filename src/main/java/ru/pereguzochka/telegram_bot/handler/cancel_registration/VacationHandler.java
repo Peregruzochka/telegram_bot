@@ -5,7 +5,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
+import ru.pereguzochka.telegram_bot.dto.CancelDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -16,7 +17,7 @@ public class VacationHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final RegistrationCache registrationCache;
     private final CancelFinishAttribute finishAttribute;
-    private final BackendServiceClient backendServiceClient;
+    private final BotBackendClient backendClient;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -29,7 +30,12 @@ public class VacationHandler implements UpdateHandler {
         RegistrationDto registrationDto = registrationCache.get(telegramId);
         TimeSlotDto timeSlot = registrationDto.getSlot();
         String caseDescription = "Отпуск";
-        backendServiceClient.cancelRegistration(registrationDto, caseDescription);
+        CancelDto cancelDto = CancelDto.builder()
+                .caseDescription(caseDescription)
+                .registrationId(registrationDto.getId())
+                .build();
+        backendClient.addCancel(cancelDto);
+        registrationCache.remove(telegramId);
         bot.edit(finishAttribute.generateText(timeSlot), finishAttribute.createMarkup(), update);
     }
 }

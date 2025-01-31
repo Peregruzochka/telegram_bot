@@ -3,6 +3,9 @@ package ru.pereguzochka.telegram_bot.handler.search_all_registration_handler;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
@@ -11,9 +14,17 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
 @Component
 @ConfigurationProperties(prefix = "attr.search-user-registration")
+@Getter
+@Setter
 public class SearchUserRegistrationAttribute extends BaseAttribute {
+    private String emptyRegistrationText;
+
     public String generateText(List<RegistrationDto> registrations) {
         String text = getText();
+        if (registrations == null || registrations.isEmpty()) {
+            text = emptyRegistrationText;
+            return text;
+        }
         StringBuilder textBuilder = new StringBuilder();
         for (RegistrationDto registration : registrations) {
             textBuilder.append("<b>").append(timeSlotToString(registration.getSlot())).append("</b>").append("\n");

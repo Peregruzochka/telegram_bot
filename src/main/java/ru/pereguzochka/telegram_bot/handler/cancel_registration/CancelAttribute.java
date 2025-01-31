@@ -19,9 +19,15 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 @ConfigurationProperties(prefix = "attr.cancel")
 public class CancelAttribute extends BaseAttribute {
     private String cancelCallback;
+    private String emptyRegistrationText;
 
     public String generateText(List<RegistrationDto> registrations) {
         String text = getText();
+        if (registrations == null || registrations.isEmpty()) {
+            text = emptyRegistrationText;
+            return text;
+        }
+
         StringBuilder textBuilder = new StringBuilder();
         for (RegistrationDto registration : registrations) {
             textBuilder.append("<b>").append(timeSlotToString(registration.getSlot())).append("</b>").append("\n");
