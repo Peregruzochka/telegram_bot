@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
+import ru.pereguzochka.telegram_bot.cache.UserDtoCache;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
@@ -22,8 +22,8 @@ public class StartMessageHandler implements UpdateHandler {
     private final StartAttribute startAttribute;
     private final TelegramBot bot;
     private final RegistrationCache cache;
-    private final BackendServiceClient backendServiceClient;
     private final BotBackendClient botBackendClient;
+    private final UserDtoCache userDtoCache;
 
     public boolean isApplicable(Update update) {
         return update.hasMessage() && update.getMessage().getText().equals("/start");
@@ -37,6 +37,7 @@ public class StartMessageHandler implements UpdateHandler {
             bot.send(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
         } else {
             cache.put(telegramId, createRegistrationDtoForRegularUser(userDto));
+            userDtoCache.put(telegramId, userDto);
             bot.send(startAttribute.createText(userDto.getName()), startAttribute.createMarkup(), update);
         }
     }

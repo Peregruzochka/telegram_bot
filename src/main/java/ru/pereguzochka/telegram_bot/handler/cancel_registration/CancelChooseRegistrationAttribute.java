@@ -17,7 +17,7 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "attr.cancel")
-public class CancelAttribute extends BaseAttribute {
+public class CancelChooseRegistrationAttribute extends BaseAttribute {
     private String cancelCallback;
     private String emptyRegistrationText;
 

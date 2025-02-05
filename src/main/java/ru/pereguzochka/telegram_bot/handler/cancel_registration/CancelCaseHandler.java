@@ -8,34 +8,36 @@ import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
-import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 @Component
 @RequiredArgsConstructor
-public class IllHandler implements UpdateHandler {
+public class CancelCaseHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final RegistrationCache registrationCache;
     private final BotBackendClient backendClient;
-    private final CancelFinishAttribute finishAttribute;
+    private final CancelFinishAttribute cancelFinishAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/ill");
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/cancel-case:");
     }
 
     @Override
     public void compute(Update update) {
+        String cancelCase = update.getCallbackQuery().getData().replace("/cancel-case:", "");
         Long telegramId = update.getCallbackQuery().getFrom().getId();
-        RegistrationDto registrationDto = registrationCache.get(telegramId);
-        TimeSlotDto timeSlot = registrationDto.getSlot();
-        String caseDescription = "Болезнь";
+        RegistrationDto registrationDto= registrationCache.get(telegramId);
         CancelDto cancelDto = CancelDto.builder()
-                .caseDescription(caseDescription)
                 .registrationId(registrationDto.getId())
+                .caseDescription(cancelCase)
                 .build();
+
         backendClient.addCancel(cancelDto);
-        registrationCache.remove(telegramId);
-        bot.edit(finishAttribute.generateText(timeSlot), finishAttribute.createMarkup(), update);
+        bot.edit(
+                cancelFinishAttribute.generateText(registrationDto),
+                cancelFinishAttribute.createMarkup(),
+                update
+        );
     }
 }

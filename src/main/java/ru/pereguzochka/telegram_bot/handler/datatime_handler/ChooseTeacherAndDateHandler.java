@@ -9,7 +9,6 @@ import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
@@ -32,7 +31,6 @@ public class ChooseTeacherAndDateHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final RegistrationCache registrationCache;
     private final DateAttribute dateAttribute;
-    private final BackendServiceClient backendServiceClient;
     private final TimeSlotsByDaysCache timeSlotsByDaysCache;
     private final TimeSlotCache timeSlotCache;
     private final DeletedMessageCache deletedMessageCache;

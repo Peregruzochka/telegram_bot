@@ -13,7 +13,6 @@ import ru.pereguzochka.telegram_bot.cache.TimeSlotCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.UserRegistrationPoolCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
@@ -31,7 +30,6 @@ public class SelectReRegistrationAndDateHandler implements UpdateHandler {
     private final UserRegistrationPoolCache userRegistrationPoolCache;
     private final RegistrationCache registrationCache;
     private final TimeSlotCache timeSlotCache;
-    private final BackendServiceClient backendServiceClient;
     private final TimeSlotsByDaysCache timeSlotsByDaysCache;
     private final WeekCursorCache weekCursorCache;
     private final DateAttribute dateAttribute;

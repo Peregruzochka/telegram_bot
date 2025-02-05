@@ -7,7 +7,6 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -25,7 +24,6 @@ import static java.util.stream.Collectors.toList;
 public class DateHandler implements UpdateHandler {
     private final TelegramBot bot;
     private final WeekCursorCache weekCursorCache;
-    private final BackendServiceClient backendServiceClient;
     private final RegistrationCache registrationCache;
     private final TimeSlotsByDaysCache timeSlotsByDaysCache;
     private final DateAttribute dataTimeAttribute;

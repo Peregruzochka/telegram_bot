@@ -7,11 +7,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.cache.LessonCache;
-import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
-import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import java.util.List;
@@ -23,7 +20,6 @@ public class LessonsHandler implements UpdateHandler {
 
     private final LessonsAttribute attribute;
     private final TelegramBot bot;
-    private final BackendServiceClient backendServiceClient;
     private final BotBackendClient botBackendClient;
     private final LessonCache lessonCache;
     private final DeletedMessageCache deletedMessageCache;

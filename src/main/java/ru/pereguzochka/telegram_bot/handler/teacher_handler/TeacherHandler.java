@@ -7,7 +7,6 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.ImageCache;
-import ru.pereguzochka.telegram_bot.client.BackendServiceClient;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
@@ -25,7 +24,6 @@ public class TeacherHandler implements UpdateHandler {
     private final RegistrationCache registrationCache;
     private final ImageCache imageCache;
     private final DeletedMessageCache deletedMessageCache;
-    private final BackendServiceClient backendServiceClient;
     private final BotBackendClient botBackendClient;
 
     @Override

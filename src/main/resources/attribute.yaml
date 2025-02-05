@@ -200,24 +200,23 @@ attr:
   choose-case:
     text: |
       Выберете причину отмены занятия:
+    manual-cancel-text: |
+      Это занятие можно отменить <b>ТОЛЬКО</b> связавшись с администратором
     buttons:
-      - Болезнь
-      - Семейные обстоятельства
-      - Отпуск
-      - Нет подходящего
+      - Связаться с администратором
       - « Назад
     callbacks:
-      - /ill
-      - /family-reasons
-      - /vacation
-      - /other-reasons
+      - /connect-to-admin
       - /cancel
+    ill-button-text: Болезнь
+    family-reasons-button-text: Семейные обстоятельства
+    cancel-case-callback: "/cancel-case:"
+
 
   cancel-finish:
     text: |
-      Ваше занятие было отменено
+      Ваше занятие было отменено:
       {}
-
       Если у вас остались вопросы, то нажмите на кнопку
     buttons:
       - Кнопка
@@ -225,12 +224,6 @@ attr:
     callbacks:
       - /connect-to-admin
       - /start
-
-  other-reasons-input:
-    text: | 
-      Введите вашу причину:
-    buttons:
-    callbacks:
 
   search-user-registration:
     text: | 

@@ -12,6 +12,7 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.NEW_USER;
 import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.REGULAR_USER;
+import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.RE_REGISTRATION;
 
 @Component
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class StartCallbackHandler implements UpdateHandler {
                 bot.edit(startAttribute.createText(userDto.getName()), startAttribute.createMarkup(), update);
             }
         } else {
-            if (registrationDto.getType().equals(REGULAR_USER)) {
+            if (registrationDto.getType().equals(REGULAR_USER) || registrationDto.getType().equals(RE_REGISTRATION)) {
                 String username = registrationDto.getUser().getName();
                 bot.edit(startAttribute.createText(username), startAttribute.createMarkup(), update);
             } else if (registrationDto.getType().equals(NEW_USER)) {
