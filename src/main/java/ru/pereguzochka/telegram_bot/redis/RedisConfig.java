@@ -13,9 +13,14 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @RequiredArgsConstructor
 public class RedisConfig {
     private final NotConfirmedEventListener notConfirmedEventListener;
+    private final FirstQuestionEventListener firstQuestionEventListener;
 
     @Value("${spring.data.redis-channel.not-confirmed}")
     private String notConfirmedChannel;
+
+    @Value("${spring.data.redis-channel.first-question}")
+    private String firstQuestionChannel;
+
 
     @Bean
     public RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory) {
@@ -25,6 +30,12 @@ public class RedisConfig {
                 new MessageListenerAdapter(notConfirmedEventListener),
                 new ChannelTopic(notConfirmedChannel)
         );
+
+        container.addMessageListener(
+                new MessageListenerAdapter(firstQuestionEventListener),
+                new ChannelTopic(firstQuestionChannel)
+        );
+
         return container;
     }
 }

@@ -43,6 +43,9 @@ public interface BotBackendClient {
     @PutMapping("/registrations/{registration-id}/confirm")
     RegistrationDto confirmRegistration(@PathVariable("registration-id") UUID registrationId);
 
+    @PutMapping("/registrations/{registration-id}/decline")
+    RegistrationDto declineRegistration(@PathVariable("registration-id") UUID registrationId);
+
     @PostMapping("/cancellations")
     CancelDto addCancel(@RequestBody CancelDto cancelDto);
 }

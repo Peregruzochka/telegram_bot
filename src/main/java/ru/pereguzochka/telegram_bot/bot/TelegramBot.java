@@ -155,6 +155,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    public void answer(Update update) {
+        String callbackId = update.getCallbackQuery().getId();
+        AnswerCallbackQuery close = AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackId)
+                .build();
+        try {
+            this.execute(close);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void edit(String text, InlineKeyboardMarkup markup, Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         Integer messageId = update.getCallbackQuery().getMessage().getMessageId();

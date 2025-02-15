@@ -8,6 +8,7 @@ spring:
   data:
     redis-channel:
       not-confirmed: not-confirmed
+      first-question: first-question
 
 
 logging:
