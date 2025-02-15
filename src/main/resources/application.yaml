@@ -9,7 +9,7 @@ spring:
     redis-channel:
       not-confirmed: not-confirmed
       first-question: first-question
-
+      second-question: second-question
 
 logging:
   level:
