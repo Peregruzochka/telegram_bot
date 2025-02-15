@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.bot;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
@@ -12,9 +13,11 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
@@ -113,6 +116,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    public void send(String text, InlineKeyboardMarkup markup, Long chatId) {
+        SendMessage sendMessage = SendMessage.builder()
+                .text(text)
+                .replyMarkup(markup)
+                .chatId(chatId)
+                .parseMode("HTML")
+                .build();
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void edit(String text, Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
@@ -195,6 +213,30 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new RuntimeException();
         }
     }
+
+    public void sendImage(String imageUrl, Update update) {
+        Long chatId = -1L;
+        if (update.hasMessage()) {
+            chatId = update.getMessage().getChatId();
+        } else if (update.hasCallbackQuery()) {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+        }
+
+        File imageFile = new File(imageUrl);
+        InputFile inputFile = new InputFile(imageFile);
+
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .photo(inputFile)
+                .build();
+
+        try {
+            execute(sendPhoto).getMessageId();
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public List<Integer> sendImages(List<ImageDto> images, Update update) {
         List<InputMedia> mediaPhotos = images.stream()

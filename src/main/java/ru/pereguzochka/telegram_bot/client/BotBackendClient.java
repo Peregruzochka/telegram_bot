@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
@@ -38,6 +39,9 @@ public interface BotBackendClient {
 
     @GetMapping("/registrations")
     List<RegistrationDto> getAllUserRegistrations(@RequestParam("user-id") UUID userId);
+
+    @PutMapping("/registrations/{registration-id}/confirm")
+    RegistrationDto confirmRegistration(@PathVariable("registration-id") UUID registrationId);
 
     @PostMapping("/cancellations")
     CancelDto addCancel(@RequestBody CancelDto cancelDto);

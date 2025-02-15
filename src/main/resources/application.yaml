@@ -5,6 +5,11 @@ spring:
       - "optional:classpath:attribute.yaml"
       - "optional:classpath:dir_info.yaml"
 
+  data:
+    redis-channel:
+      not-confirmed: not-confirmed
+
+
 logging:
   level:
     org.springframework: INFO

@@ -236,3 +236,37 @@ attr:
     empty-registration-text: |
       Вы не записаны не на одно занятие
 
+  not-confirmed-event-sender:
+    text: |
+      <b>Добрый день!</b> 👋
+
+      Вы записаны на занятие завтра:
+      📅 <b>Дата:</b> {0}
+      🕙 <b>Время:</b> {1}
+      🎯 <b>Направление:</b> {2}
+      👩‍🏫 <b>Педагог:</b> {3}
+      👶 <b>Ребёнок:</b> {4}
+
+      <b>Подтвердите, пожалуйста, участие😊:</b>
+
+    confirm-button-text:
+      ✅ Будем на занятии
+    decline-button-text:
+      ❌ Не сможем прийти
+    confirm-button-callback:
+      "/first-confirm:"
+    decline-button-callback:
+      "/first-decline:"
+
+  confirm-message:
+    text: |
+      "Отлично! Ждём вас завтра! До встречи! 😊"
+      
+      Не забудьте оплатить занятие.
+      <i>QR-код для оплаты:</i>
+
+    buttons:
+      - « В главное меню
+    callbacks:
+      - /start
+
