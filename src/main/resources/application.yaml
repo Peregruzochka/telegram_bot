@@ -6,6 +6,9 @@ spring:
       - "optional:classpath:dir_info.yaml"
 
   data:
+    redis:
+      host: ${SPRING_REDIS_HOST:redis}
+      port: ${SPRING_REDIS_PORT:6379}
     redis-channel:
       not-confirmed: not-confirmed
       first-question: first-question
