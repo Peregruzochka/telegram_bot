@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.datatime_handler;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class SelectReRegistrationAndDateHandler implements UpdateHandler {
         UUID teacherId = selectedRegistration.getTeacher().getId();
 
         List<TimeSlotDto> timeSlots = backendClient.getTeacherTimeSlotsInNextMonth(teacherId);
-
+        timeSlots.removeIf(slot -> slot.getStartTime().isBefore(LocalDateTime.now().plusHours(3)));
         timeSlots.forEach(timeSlot -> timeSlotCache.put(timeSlot.getId(), timeSlot));
 
         Map<LocalDate, List<TimeSlotDto>> timeSlotsByDays = timeSlots.stream()

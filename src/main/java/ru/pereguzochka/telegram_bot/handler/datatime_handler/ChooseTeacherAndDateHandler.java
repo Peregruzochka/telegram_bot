@@ -17,6 +17,7 @@ import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,6 +56,7 @@ public class ChooseTeacherAndDateHandler implements UpdateHandler {
         registrationDto.setTeacher(teacherDto);
 
         List<TimeSlotDto> timeSlots = backendClient.getTeacherTimeSlotsInNextMonth(teacherId);
+        timeSlots.removeIf(slot -> slot.getStartTime().isBefore(LocalDateTime.now().plusHours(3)));
 
         timeSlots.forEach(timeSlot -> timeSlotCache.put(timeSlot.getId(), timeSlot));
 

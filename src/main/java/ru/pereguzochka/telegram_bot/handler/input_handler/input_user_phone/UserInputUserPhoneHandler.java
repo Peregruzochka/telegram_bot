@@ -9,6 +9,7 @@ import ru.pereguzochka.telegram_bot.cache.UserInputFlags;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.handler.input_handler.check_data.CheckDataAttribute;
+import ru.pereguzochka.telegram_bot.tools.PhoneNumberFormatter;
 import ru.pereguzochka.telegram_bot.tools.PhoneNumberValidator;
 
 import java.util.Map;
@@ -22,6 +23,7 @@ public class UserInputUserPhoneHandler implements UpdateHandler {
     private final PhoneNumberValidator phoneNumberValidator;
     private final CheckDataAttribute checkDataAttribute;
     private final RegistrationCache registrationCache;
+    private final PhoneNumberFormatter phoneNumberFormatter;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -46,10 +48,11 @@ public class UserInputUserPhoneHandler implements UpdateHandler {
 
         String phone = update.getMessage().getText();
         if (phoneNumberValidator.isValidPhoneNumber(phone))  {
+            String formattedPhone = phoneNumberFormatter.formatPhoneNumber(phone);
             Long telegramId = update.getMessage().getFrom().getId();
 
             RegistrationDto registrationDto = registrationCache.get(telegramId);
-            registrationDto.getUser().setPhone(phone);
+            registrationDto.getUser().setPhone(formattedPhone);
 
             bot.send(checkDataAttribute.generateText(registrationDto), checkDataAttribute.createMarkup(), update);
         } else {
