@@ -8,7 +8,7 @@ spring:
   data:
     redis:
       host: ${SPRING_REDIS_HOST:localhost}
-      port: ${SPRING_REDIS_PORT:6378}
+      port: ${SPRING_REDIS_PORT:6379}
     redis-channel:
       not-confirmed: not-confirmed
       first-question: first-question
@@ -22,5 +22,5 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
 
 bot-backend:
-  host: http://localhost
+  host: http://192.168.31.103
   port: 8081
