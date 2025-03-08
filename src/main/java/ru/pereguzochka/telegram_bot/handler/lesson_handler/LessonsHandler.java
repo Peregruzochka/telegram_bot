@@ -40,6 +40,13 @@ public class LessonsHandler implements UpdateHandler {
 
         List<LessonDto> lessons = botBackendClient.getAllLessons();
         lessons.forEach(lesson -> lessonCache.put(lesson.getId(), lesson));
-        bot.edit(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
+        try {
+            bot.edit(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText query: [400] Bad Request: message to edit not found")) {
+                bot.send(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
+            }
+        }
+
     }
 }
