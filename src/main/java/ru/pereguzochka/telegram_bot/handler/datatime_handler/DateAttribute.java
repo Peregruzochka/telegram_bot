@@ -33,7 +33,25 @@ public class DateAttribute extends BaseAttribute {
     private String nextWeekButton;
     private String nextWeekCallback;
 
+    private String backToTeachersButton;
+    private String backToTeachersCallback;
+
+    private String backToLessonsButton;
+    private String backToLessonsCallback;
+
     public InlineKeyboardMarkup generateLocalDateMarkup(List<LocalDate> actualLocalDates, int next) {
+        List<List<InlineKeyboardButton>> newButtons = getNewButtons(actualLocalDates, next);
+        newButtons.add(List.of(createButton(backToTeachersButton, backToTeachersCallback)));
+        return generateMarkup(newButtons);
+    }
+
+    public InlineKeyboardMarkup generateHideTeacherLocalDateMarkup(List<LocalDate> actualLocalDates, int next) {
+        List<List<InlineKeyboardButton>> newButtons = getNewButtons(actualLocalDates, next);
+        newButtons.add(List.of(createButton(backToLessonsButton, backToLessonsCallback)));
+        return generateMarkup(newButtons);
+    }
+
+    private List<List<InlineKeyboardButton>> getNewButtons(List<LocalDate> actualLocalDates, int next) {
         List<LocalDate> currentWeek = generateWeek(next);
         List<List<InlineKeyboardButton>> newButtons = new ArrayList<>(currentWeek.stream()
                 .map(localDate -> {
@@ -51,9 +69,9 @@ public class DateAttribute extends BaseAttribute {
             newButtons.add(List.of(createButton(lastWeekButton, lastWeekCallback)));
         }
 
-
-        return generateMarkup(newButtons);
+        return newButtons;
     }
+
 
     private List<LocalDate> generateWeek(int next) {
         LocalDate now = LocalDate.now().plusWeeks(next);

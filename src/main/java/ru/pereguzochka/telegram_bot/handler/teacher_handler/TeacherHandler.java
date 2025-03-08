@@ -87,7 +87,7 @@ public class TeacherHandler implements UpdateHandler {
 
                 bot.edit(
                         dateAttribute.getText(),
-                        dateAttribute.generateLocalDateMarkup(actualDate, 0),
+                        dateAttribute.generateHideTeacherLocalDateMarkup(actualDate, 0),
                         update
                 );
 

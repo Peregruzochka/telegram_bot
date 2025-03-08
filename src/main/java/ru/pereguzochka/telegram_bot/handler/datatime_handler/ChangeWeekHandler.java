@@ -3,7 +3,9 @@ package ru.pereguzochka.telegram_bot.handler.datatime_handler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
 import ru.pereguzochka.telegram_bot.cache.TimeSlotsByDaysCache;
 import ru.pereguzochka.telegram_bot.cache.WeekCursorCache;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -19,6 +21,7 @@ public class ChangeWeekHandler implements UpdateHandler {
     private final DateAttribute attribute;
     private final WeekCursorCache cache;
     private final TimeSlotsByDaysCache timeSlotsByDaysCache;
+    private final RegistrationCache registrationCache;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -45,7 +48,15 @@ public class ChangeWeekHandler implements UpdateHandler {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         List<LocalDate> actualLocalDate = timeSlotsByDaysCache.get(telegramId).keySet().stream().toList();
 
-        bot.edit(attribute.getText(), attribute.generateLocalDateMarkup(actualLocalDate, weak), update);
+        boolean hiddenStatus = registrationCache.get(telegramId).getTeacher().isHidden();
 
+        InlineKeyboardMarkup markup;
+        if (hiddenStatus) {
+            markup = attribute.generateHideTeacherLocalDateMarkup(actualLocalDate, weak);
+        } else {
+            markup = attribute.generateLocalDateMarkup(actualLocalDate, weak);
+        }
+
+        bot.edit(attribute.getText(), markup, update);
     }
 }

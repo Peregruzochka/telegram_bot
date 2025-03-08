@@ -67,16 +67,20 @@ attr:
       
       <b>Выберите дату занятия:</b>
     buttons:
-      - « Назад к выбору педагога
       - Нет подходящего времени
     callbacks:
-      - /teachers
       - /connect-to-admin
     last-week-button: « Предыдущая неделя
     last-week-callback: /change-week-
     next-week-button: Следующая неделя »
     next-week-callback: /change-week+
+    back-to-teachers-button: « Назад к выбору педагога
+    back-to-teachers-callback: /teachers
+    back-to-lessons-button: « Назад к выбору направления
+    back-to-lessons-callback: /lessons
     local-date-callback: "/local-date:"
+
+
     ok-day: ✅
     not-ok-day: ❌
 
