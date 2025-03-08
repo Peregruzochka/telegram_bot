@@ -1,10 +1,5 @@
 package ru.pereguzochka.telegram_bot.bot;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -25,11 +20,15 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
 import ru.pereguzochka.telegram_bot.cache.FileIDCache;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -45,8 +44,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final FileIDCache fileIDCache;
 
     public TelegramBot(@Lazy List<UpdateHandler> handlers,
-                       FileIDCache fileIDCache,
-                       DeletedMessageCache deletedMessageCache) {
+                       FileIDCache fileIDCache) {
         this.handlers = handlers;
         this.fileIDCache = fileIDCache;
     }
@@ -249,6 +247,27 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    public Integer sendImage(ImageDto imageDto, String text, InlineKeyboardMarkup markup, Update update) {
+        InputFile inputFile = createInputFile(imageDto);
+        Long chatId = update.getCallbackQuery().getMessage().getChatId();
+
+        SendPhoto sendPhoto = SendPhoto.builder()
+                .chatId(chatId)
+                .photo(inputFile)
+                .caption(text)
+                .replyMarkup(markup)
+                .parseMode("HTML")
+                .build();
+
+        try {
+            Message message = execute(sendPhoto);
+            fileIDCache.put(imageDto.getId(), message.getPhoto().get(0).getFileId());
+            return message.getMessageId();
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public List<Integer> sendImages(List<ImageDto> images, Update update) {
         List<InputMedia> mediaPhotos = images.stream()
@@ -298,6 +317,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                     .build();
         }
     }
+
+    private InputFile createInputFile(ImageDto imageDto) {
+        if (!fileIDCache.contains(imageDto.getId())) {
+            byte[] imageBytes = imageDto.getImage();
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+            return new InputFile(inputStream, imageDto.getFilename());
+        } else {
+            String telegramFileId = fileIDCache.get(imageDto.getId());
+            return new InputFile(telegramFileId);
+        }
+    }
 }
+
 
 

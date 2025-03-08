@@ -43,13 +43,14 @@ public class DateAttribute extends BaseAttribute {
                 })
                 .toList());
 
+        if (next < 4) {
+            newButtons.add(List.of(createButton(nextWeekButton, nextWeekCallback)));
+        }
+
         if (next > 0) {
             newButtons.add(List.of(createButton(lastWeekButton, lastWeekCallback)));
         }
 
-        if (next < 4) {
-            newButtons.add(List.of(createButton(nextWeekButton, nextWeekCallback)));
-        }
 
         return generateMarkup(newButtons);
     }

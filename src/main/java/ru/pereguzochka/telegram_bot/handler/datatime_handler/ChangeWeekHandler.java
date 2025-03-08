@@ -30,6 +30,10 @@ public class ChangeWeekHandler implements UpdateHandler {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
 
         Integer weak = cache.get(chatId);
+        if (weak == null) {
+            weak = 0;
+        }
+
         String callback = update.getCallbackQuery().getData();
         if (callback.endsWith("+")) {
             weak++;

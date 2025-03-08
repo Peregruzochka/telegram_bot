@@ -51,6 +51,15 @@ attr:
       - /lessons
     main-callbacks: "/teacher:"
 
+  one-teacher:
+    text:
+    buttons:
+      - Продолжить запись »
+      - « Назад к выбору направления
+    callbacks:
+      - /one-teacher
+      - /lessons
+
   date:
     text: |
       ✅ - вы можете записаться на занятие в этот день
