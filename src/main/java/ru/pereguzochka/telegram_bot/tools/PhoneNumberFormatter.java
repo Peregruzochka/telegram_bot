@@ -4,23 +4,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PhoneNumberFormatter {
+    private static final String PHONE_REGEX = "^(\\+7|8)?\\s*\\(?\\d{3}\\)?\\s*-?\\d{3}-?\\d{2}-?\\d{2}$";
+
     public String formatPhoneNumber(String phone) {
         if (phone == null || phone.isBlank()) {
             return null;
         }
 
-        // Убираем все нецифровые символы
-        phone = phone.replaceAll("\\D", "");
-
-        // Проверяем, что номер содержит 11 цифр и начинается с 8 или 7
-        if (phone.length() == 11) {
-            if (phone.startsWith("8")) {
-                return "+7" + phone.substring(1);
-            } else if (phone.startsWith("7")) {
-                return "+" + phone;
-            }
+        if (!phone.matches(PHONE_REGEX)) {
+            throw new IllegalArgumentException("Phone number incorrect");
         }
 
-        throw new IllegalArgumentException("Phone number incorrect"); // Некорректный номер
+        phone = phone.replaceAll("\\D", "");
+
+        if (phone.length() == 11 && (phone.startsWith("7") || phone.startsWith("8"))) {
+            phone = "+7" + phone.substring(1);
+        } else if (phone.length() == 10) {
+            phone = "+7" + phone;
+        } else {
+            throw new IllegalArgumentException("Phone number incorrect");
+        }
+
+        return phone.replaceFirst("(\\+7)(\\d{3})(\\d{3})(\\d{2})(\\d{2})", "$1 $2 $3-$4-$5");
     }
 }
