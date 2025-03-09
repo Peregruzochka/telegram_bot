@@ -33,8 +33,11 @@ public class OneTeacherHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
+        
         List<Integer> removedMessage = deletedMessageCache.get(telegramId);
         removedMessage.forEach(messageId -> telegramBot.delete(messageId, telegramId));
+        deletedMessageCache.remove(telegramId);
+
         UUID teacherId = registrationCache.get(telegramId).getTeacher().getId();
 
         List<LocalDate> actualDate = backendClient.getTeacherTimeSlotsInNextMonth(teacherId).stream()
