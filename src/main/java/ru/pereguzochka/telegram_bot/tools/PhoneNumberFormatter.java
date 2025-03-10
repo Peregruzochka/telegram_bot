@@ -11,20 +11,21 @@ public class PhoneNumberFormatter {
             return null;
         }
 
+        // Проверяем, что номер соответствует валидному формату
         if (!phone.matches(PHONE_REGEX)) {
             throw new IllegalArgumentException("Phone number incorrect");
         }
 
+        // Убираем все нецифровые символы
         phone = phone.replaceAll("\\D", "");
 
+        // Обрабатываем номер с учетом кода страны
         if (phone.length() == 11 && (phone.startsWith("7") || phone.startsWith("8"))) {
-            phone = "+7" + phone.substring(1);
+            return "+7" + phone.substring(1);
         } else if (phone.length() == 10) {
-            phone = "+7" + phone;
-        } else {
-            throw new IllegalArgumentException("Phone number incorrect");
+            return "+7" + phone;
         }
 
-        return phone.replaceFirst("(\\+7)(\\d{3})(\\d{3})(\\d{2})(\\d{2})", "$1 $2 $3-$4-$5");
+        throw new IllegalArgumentException("Phone number incorrect");
     }
 }
