@@ -30,7 +30,6 @@ public class FirstConfirmHandler implements UpdateHandler {
         backendClient.confirmRegistration(registrationId);
 
         telegramBot.answer(update);
-        telegramBot.sendImage("src/main/resources/image/f6c3c650a0c583bfe48d43fdfb4ab8a3.jpg", update);
         telegramBot.send(
                 confirmMessageAttribute.getText(),
                 confirmMessageAttribute.createMarkup(),
