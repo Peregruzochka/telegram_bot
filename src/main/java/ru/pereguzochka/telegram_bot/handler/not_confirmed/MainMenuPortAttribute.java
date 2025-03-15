@@ -1,14 +1,10 @@
 package ru.pereguzochka.telegram_bot.handler.not_confirmed;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
 @Component
-@Getter
-@Setter
-@ConfigurationProperties(prefix = "attr.confirm-message")
-public class ConfirmMessageAttribute {
-    private String text;
+@ConfigurationProperties(prefix = "attr.main-menu-port")
+public class MainMenuPortAttribute extends BaseAttribute {
 }

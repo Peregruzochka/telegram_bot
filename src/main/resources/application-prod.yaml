@@ -13,6 +13,7 @@ spring:
       not-confirmed: not-confirmed
       first-question: first-question
       second-question: second-question
+      qr-sender: qr-sender
 
 logging:
   level:
@@ -24,3 +25,5 @@ logging:
 bot-backend:
   host: http://192.168.31.103
   port: 8081
+
+qr-code-url: src/main/resources/qr_code/qr.jpg

@@ -224,20 +224,25 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendImage(String imageUrl, Update update) {
+    public void sendImage(String imageUrl, String text, Update update) {
         Long chatId = -1L;
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
         } else if (update.hasCallbackQuery()) {
             chatId = update.getCallbackQuery().getMessage().getChatId();
         }
+        sendImage(imageUrl, text, chatId);
+    }
 
+    public void sendImage(String imageUrl, String text, Long chatId) {
         File imageFile = new File(imageUrl);
         InputFile inputFile = new InputFile(imageFile);
 
         SendPhoto sendPhoto = SendPhoto.builder()
                 .chatId(chatId)
                 .photo(inputFile)
+                .caption(text)
+                .parseMode("HTML")
                 .build();
 
         try {

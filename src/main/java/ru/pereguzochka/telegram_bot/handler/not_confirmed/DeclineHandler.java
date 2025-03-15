@@ -9,31 +9,31 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import java.util.UUID;
 
-
 @Component
 @RequiredArgsConstructor
-public class FirstConfirmHandler implements UpdateHandler {
+public class DeclineHandler implements UpdateHandler {
 
-    private final BotBackendClient backendClient;
     private final TelegramBot telegramBot;
-    private final ConfirmMessageAttribute confirmMessageAttribute;
+    private final DeclineMessageAttribute declineMessageAttribute;
+    private final BotBackendClient backendClient;
 
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/first-confirm:");
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/first-decline:");
     }
 
     @Override
     public void compute(Update update) {
-        UUID registrationId = UUID.fromString(update.getCallbackQuery().getData().replace("/first-confirm:", ""));
-        backendClient.confirmRegistration(registrationId);
+        UUID registrationId = UUID.fromString(update.getCallbackQuery().getData().replace("/first-decline:", ""));
 
-        telegramBot.answer(update);
-        telegramBot.send(
-                confirmMessageAttribute.getText(),
-                confirmMessageAttribute.createMarkup(),
+        backendClient.declineRegistration(registrationId);
+
+        telegramBot.edit(
+                declineMessageAttribute.getText(),
+                declineMessageAttribute.createMarkup(),
                 update
         );
     }
 }
+

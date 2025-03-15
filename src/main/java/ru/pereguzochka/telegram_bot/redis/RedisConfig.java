@@ -15,6 +15,7 @@ public class RedisConfig {
     private final NotConfirmedEventListener notConfirmedEventListener;
     private final FirstQuestionEventListener firstQuestionEventListener;
     private final SecondQuestionEventListener secondQuestionEventListener;
+    private final QRSenderEventListener qrSenderEventListener;
 
     @Value("${spring.data.redis-channel.not-confirmed}")
     private String notConfirmedChannel;
@@ -25,6 +26,8 @@ public class RedisConfig {
     @Value("${spring.data.redis-channel.second-question}")
     private String secondQuestionChannel;
 
+    @Value("${spring.data.redis-channel.qr-sender}")
+    private String qrSenderChannel;
 
     @Bean
     public RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory) {
@@ -43,6 +46,11 @@ public class RedisConfig {
         container.addMessageListener(
                 new MessageListenerAdapter(secondQuestionEventListener),
                 new ChannelTopic(secondQuestionChannel)
+        );
+
+        container.addMessageListener(
+                new MessageListenerAdapter(qrSenderEventListener),
+                new ChannelTopic(qrSenderChannel)
         );
 
         return container;
