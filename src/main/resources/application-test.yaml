@@ -23,7 +23,7 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
 
 bot-backend:
-  host: http://localhost
+  host: http://192.168.31.103
   port: 8091
 
 qr-code-url: src/main/resources/qr_code/qr.jpg
