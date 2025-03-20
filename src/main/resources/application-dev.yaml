@@ -1,0 +1,29 @@
+spring:
+  config:
+    import:
+      - "optional:classpath:bot-dev.yaml"
+      - "optional:classpath:attribute.yaml"
+      - "optional:classpath:dir_info.yaml"
+
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6377}
+    redis-channel:
+      not-confirmed: not-confirmed
+      first-question: first-question
+      second-question: second-question
+      qr-sender: qr-sender
+
+logging:
+  level:
+    org.springframework: INFO
+    ru.pereguzochka.telegram_bot: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
+
+bot-backend:
+  host: localhost
+  port: 8071
+
+qr-code-url: src/main/resources/qr_code/qr.jpg

@@ -3,6 +3,7 @@ HELP.md
 build/
 /src/main/resources/bot-prod.yaml
 /src/main/resources/bot-test.yaml
+/src/main/resources/bot-dev.yaml
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
