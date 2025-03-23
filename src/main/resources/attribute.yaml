@@ -47,45 +47,49 @@ attr:
 
   teachers:
     text: |
-      <b>Выберите педагога:</b>
+      🎯 <b>Направление:</b> {}
+      
+      Выберите педагога:
     buttons:
       - « Назад к выбору направления
     callbacks:
       - /lessons
-    main-callbacks: "/teacher:"
+    main-callbacks: "/select-teacher:"
 
-  one-teacher:
+  teacher-description:
     text:
+      🎯 <b>Направление:</b> {}
     buttons:
-      - Продолжить запись »
-      - « Назад к выбору направления
+      - Продолжить »
+      - « Назад
     callbacks:
-      - /one-teacher
-      - /lessons
+      - /dates
+      - /back-to-teachers
 
-  date:
+  dates:
     text: |
+      🎯 <b>Направление:</b> {0}
+      👩‍🏫 <b>Педагог:</b> {1}
+      
       ✅ - вы можете записаться на занятие в этот день
       ❌ - к сожалению, педагог уже занят
       
       <b>Выберите дату занятия:</b>
     buttons:
-      - Нет подходящего времени
+      - « Назад
     callbacks:
-      - /connect-to-admin
-    last-week-button: « Предыдущая неделя
+      - /teachers
+    last-week-button: «
     last-week-callback: /change-week-
-    next-week-button: Следующая неделя »
+    next-week-button: »
     next-week-callback: /change-week+
-    back-to-teachers-button: « Назад к выбору педагога
-    back-to-teachers-callback: /teachers
-    back-to-lessons-button: « Назад к выбору направления
-    back-to-lessons-callback: /lessons
-    local-date-callback: "/local-date:"
-
+    empty-week-button: x
+    empty-callback: /empty
 
     ok-day: ✅
     not-ok-day: ❌
+
+    local-date-callback: "/date:"
 
   time-set:
     text: |
@@ -399,5 +403,10 @@ attr:
       <i>QR-код для оплаты:</i>
       
   
+  restart-bot-message:
+    text: |
+      <b>Что-то пошло не так...</b>
       
+      Попробуйте перезагрузить бота:
+      Menu(Синяя кнопка) -> Перезагрузить🔄
       

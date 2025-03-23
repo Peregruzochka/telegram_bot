@@ -1,5 +1,6 @@
 package ru.pereguzochka.telegram_bot.redis.redis_repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,12 +13,15 @@ import java.util.Optional;
 public abstract class RedisRepository<K extends Serializable, V extends Serializable> {
 
     private final HashOperations<String, K, V> hashOperations;
+    private final ObjectMapper objectMapper;
+
     private final String mapName = initMapName();
 
     protected abstract String initMapName();
 
-    protected RedisRepository(RedisTemplate<String, Serializable> redisTemplate) {
+    protected RedisRepository(RedisTemplate<String, Serializable> redisTemplate, ObjectMapper objectMapper) {
         this.hashOperations = redisTemplate.opsForHash();
+        this.objectMapper = objectMapper;
     }
 
     public void put(K key, V value) {
@@ -26,11 +30,17 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
         log.info("{}: put {}={}", mapName, key, value);
     }
 
-    public Optional<V> get(K key) {
+    public Optional<V> get(K key, Class<V> clazz) {
         checkMapName();
-        Optional<V> result = Optional.ofNullable(hashOperations.get(mapName, key));
-        log.info("{}: get {}", mapName, key);
-        return result;
+        Object value = hashOperations.get(mapName, key);
+
+        if (value != null) {
+            V result = objectMapper.convertValue(value, clazz);
+            log.info("{}: get {}", mapName, key);
+            return Optional.of(result);
+        }
+
+        return Optional.empty();
     }
 
     public void delete(K key) {
