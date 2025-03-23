@@ -25,6 +25,9 @@ public interface BotBackendClient {
     @GetMapping("/lessons/all")
     List<LessonDto> getAllLessons();
 
+    @GetMapping("lessons/{lesson-id}")
+    LessonDto getLesson(@PathVariable("lesson-id") UUID id);
+
     @GetMapping("/images/{image-id}")
     ImageDto getImageById(@PathVariable(name = "image-id") UUID imageId);
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class LessonDto {
+public class LessonDto implements Serializable {
     private UUID id;
     private String name;
     private String description;
