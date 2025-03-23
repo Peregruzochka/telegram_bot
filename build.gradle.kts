@@ -1,9 +1,9 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.3.4"
-	id("io.spring.dependency-management") version "1.1.6"
+	id("org.springframework.boot") version "3.4.2"
+	id("io.spring.dependency-management") version "1.1.7"
 }
-val springCloudVersion by extra("2023.0.4")
+val springCloudVersion by extra("2024.0.0")
 
 group = "ru.pereguzochka"
 version = "0.0.1-SNAPSHOT"
