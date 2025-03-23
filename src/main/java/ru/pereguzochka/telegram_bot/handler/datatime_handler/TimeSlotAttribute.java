@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
@@ -16,10 +18,19 @@ import java.util.List;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties("attr.time-set")
-public class TimeAttribute extends BaseAttribute {
+@ConfigurationProperties("attr.time-slot")
+public class TimeSlotAttribute extends BaseAttribute {
 
     private String timeSlotCallback;
+
+    public String generateText(LessonDto lesson, TeacherDto teacher) {
+        String lessonName = lesson.getName();
+        String teacherName = teacher.getName();
+
+        return super.text
+                .replace("{0}", lessonName)
+                .replace("{1}", teacherName);
+    }
 
     public InlineKeyboardMarkup createTimeMarkup(List<TimeSlotDto> timeSlots) {
         List<List<InlineKeyboardButton>> newKeyboard = new ArrayList<>(timeSlots.stream()

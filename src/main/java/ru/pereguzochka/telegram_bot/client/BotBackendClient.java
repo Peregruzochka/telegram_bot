@@ -14,6 +14,7 @@ import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,9 @@ public interface BotBackendClient {
 
     @GetMapping("/timeslots/next-month-search")
     List<TimeSlotDto> getTeacherTimeSlotsInNextMonth(@RequestParam("teacher-id") UUID teacherId);
+
+    @GetMapping("/timeslots/available-by-date")
+    List<TimeSlotDto> getTeacherAvailableTimeSlotsByDate(@RequestParam("teacher-id") UUID teacherId, @RequestParam LocalDate date);
 
     @PostMapping("/registrations")
     RegistrationDto addRegistration(@RequestBody RegistrationDto registrationDto);
