@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.redis;
+package ru.pereguzochka.telegram_bot.redis.redis_broker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,28 +8,26 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.dto.RegistrationEvent;
-import ru.pereguzochka.telegram_bot.sender.QRSender;
+import ru.pereguzochka.telegram_bot.sender.FirstQuestionEventSender;
 
 import java.nio.charset.StandardCharsets;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class QRSenderEventListener implements MessageListener {
-
+@Slf4j
+public class FirstQuestionEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
-    private final QRSender qrSender;
+    private final FirstQuestionEventSender firstQuestionEventSender;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String messageBody = new String(message.getBody(), StandardCharsets.UTF_8);
-        log.info("QR sender event: {}", messageBody);
+        log.info("First question registration event: {}", messageBody);
         try {
             RegistrationEvent registrationEvent = objectMapper.readValue(messageBody, RegistrationEvent.class);
-            qrSender.send(registrationEvent);
+            firstQuestionEventSender.send(registrationEvent);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

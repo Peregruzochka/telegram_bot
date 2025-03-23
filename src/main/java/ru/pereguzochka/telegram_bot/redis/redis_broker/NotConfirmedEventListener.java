@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.redis;
+package ru.pereguzochka.telegram_bot.redis.redis_broker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,24 +8,24 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.dto.RegistrationEvent;
-import ru.pereguzochka.telegram_bot.sender.SecondQuestionEventSender;
+import ru.pereguzochka.telegram_bot.sender.NotConfirmedEventSender;
 
 import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class SecondQuestionEventListener implements MessageListener {
+public class NotConfirmedEventListener implements MessageListener {
     private final ObjectMapper objectMapper;
-    private final SecondQuestionEventSender secondQuestionEventSender;
+    private final NotConfirmedEventSender notConfirmedEventSender;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String messageBody = new String(message.getBody(), StandardCharsets.UTF_8);
-        log.info("Second question registration event: {}", messageBody);
+        log.info("Not confirmed registration event: {}", messageBody);
         try {
             RegistrationEvent registrationEvent = objectMapper.readValue(messageBody, RegistrationEvent.class);
-            secondQuestionEventSender.send(registrationEvent);
+            notConfirmedEventSender.send(registrationEvent);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
