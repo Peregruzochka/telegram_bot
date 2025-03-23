@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
-import ru.pereguzochka.telegram_bot.cache.DeletedMessageCache;
-import ru.pereguzochka.telegram_bot.cache.LessonCache;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -18,11 +16,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LessonsHandler implements UpdateHandler {
 
-    private final LessonsAttribute attribute;
-    private final TelegramBot bot;
     private final BotBackendClient botBackendClient;
-    private final LessonCache lessonCache;
-    private final DeletedMessageCache deletedMessageCache;
+    private final TelegramBot telegramBot;
+    private final LessonsAttribute lessonsAttribute;
+
 
     @Override
     public boolean isApplicable(Update update) {
@@ -31,22 +28,12 @@ public class LessonsHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        List<Integer> deletedMessage = deletedMessageCache.get(chatId);
-        if (deletedMessage != null && !deletedMessage.isEmpty()) {
-            deletedMessage.forEach(messageId -> bot.delete(messageId, chatId));
-            deletedMessageCache.remove(chatId);
-        }
 
         List<LessonDto> lessons = botBackendClient.getAllLessons();
-        lessons.forEach(lesson -> lessonCache.put(lesson.getId(), lesson));
-        try {
-            bot.edit(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
-        } catch (RuntimeException e) {
-            if (e.getMessage().equals("Error executing org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText query: [400] Bad Request: message to edit not found")) {
-                bot.send(attribute.getText(), attribute.generateLessonsKeyboard(lessons), update);
-            }
-        }
+        //getGroup!!!
+        telegramBot.edit(lessonsAttribute.getText(), lessonsAttribute.generateLessonsKeyboard(lessons), update);
 
+        Long telegramId = update.getCallbackQuery().getFrom().getId();
+        log.info("telegramId: {} -> /lessons", telegramId);
     }
 }

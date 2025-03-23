@@ -17,12 +17,23 @@ import java.util.List;
 @Setter
 @ConfigurationProperties(prefix = "attr.lessons")
 public class LessonsAttribute extends BaseAttribute {
-    private String mainCallback;
+    private String individualCallback;
+    private String individualLabel;
+    private String groupCallback;
+    private String groupLabel;
 
     public InlineKeyboardMarkup generateLessonsKeyboard(List<LessonDto> lessons) {
         List<List<InlineKeyboardButton>> newButtons = lessons.stream()
-                .map(lessonDto -> List.of(createButton(lessonDto.getName(), mainCallback + lessonDto.getId())))
+                .map(lessonDto -> {
+                        String buttonText = lessonDto.getName() + " " + individualLabel;
+                        String callback = individualCallback + lessonDto.getId();
+                        return createButton(buttonText, callback);
+                })
+                .map(List::of)
                 .toList();
+
+        // групповые занятия
+
         return generateMarkup(newButtons);
     }
 }

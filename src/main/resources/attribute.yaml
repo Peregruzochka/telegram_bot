@@ -30,7 +30,10 @@ attr:
       - « Назад
     callbacks:
       - /start
-    main-callback: "/lesson-description:"
+    individual-callback: "/lesson-description:"
+    individual-label: 👤
+    group-callback: "/group-lesson-description:"
+    group-label: 👥
 
   lesson-description:
     text: | 
