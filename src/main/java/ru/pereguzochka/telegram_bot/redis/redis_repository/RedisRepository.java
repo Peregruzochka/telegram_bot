@@ -14,7 +14,6 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
 
     private final HashOperations<String, K, V> hashOperations;
     private final ObjectMapper objectMapper;
-
     private final String mapName = initMapName();
 
     protected abstract String initMapName();
@@ -36,10 +35,8 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
 
         if (value != null) {
             V result = objectMapper.convertValue(value, clazz);
-            log.info("{}: get {}", mapName, key);
             return Optional.of(result);
         }
-
         return Optional.empty();
     }
 

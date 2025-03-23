@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.datatime_handler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -17,36 +18,28 @@ import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChangeWeekHandler implements UpdateHandler {
-
+public class DatesHandler implements UpdateHandler {
+    private final TelegramBot bot;
+    private final BotBackendClient botBackendClient;
     private final WeekCursorByTelegramId weekCursorByTelegramId;
-    private final DatesAttribute datesAttribute;
     private final SelectedLessonByTelegramId selectedLessonByTelegramId;
     private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
-    private final TelegramBot telegramBot;
-    private final BotBackendClient botBackendClient;
+    private final DatesAttribute datesAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/change-week");
+        return update.hasCallbackQuery() && (
+                update.getCallbackQuery().getData().equals("/dates")
+                        || update.getCallbackQuery().getData().equals("/back-to-dates"));
     }
 
     @Override
     public void compute(Update update) {
         String telegramId = update.getCallbackQuery().getFrom().getId().toString();
-
-        Integer weak = weekCursorByTelegramId.get(telegramId, Integer.class).orElse(0);
-
-        String callback = update.getCallbackQuery().getData();
-        if (callback.endsWith("+")) {
-            weak++;
-        } else if (callback.endsWith("-")) {
-            weak--;
-        }
-        weekCursorByTelegramId.put(telegramId, weak);
 
         LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
         TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
@@ -56,10 +49,20 @@ public class ChangeWeekHandler implements UpdateHandler {
         }
 
         List<TimeSlotDto> timeslots = botBackendClient.getTeacherTimeSlotsInNextMonth(teacher.getId());
+        weekCursorByTelegramId.put(telegramId, 0);
 
         String text = datesAttribute.generateText(lesson, teacher);
-        InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(timeslots, weak);
+        InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(timeslots, 0);
 
-        telegramBot.edit(text, markup, update);
+        String callback = update.getCallbackQuery().getData();
+        if (callback.equals("/dates")) {
+            bot.delete(update);
+            bot.send(text, markup, update);
+
+        } else if (callback.equals("/back-to-dates")) {
+            bot.edit(text, markup, update);
+        }
+
+        log.info("telegramId: {}, -> {}", telegramId, callback);
     }
 }

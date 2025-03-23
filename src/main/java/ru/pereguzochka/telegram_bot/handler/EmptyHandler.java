@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.sender;
+package ru.pereguzochka.telegram_bot.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -7,12 +7,16 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 
 @Component
 @RequiredArgsConstructor
-public class RestartBotMessageSender {
+public class EmptyHandler implements UpdateHandler {
     private final TelegramBot telegramBot;
-    private final RestartBotMessageAttribute restartBotMessageAttribute;
 
-    public void send(Update update) {
+    @Override
+    public boolean isApplicable(Update update) {
+        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/empty");
+    }
+
+    @Override
+    public void compute(Update update) {
         telegramBot.answer(update);
-        telegramBot.send(restartBotMessageAttribute.getText(), update);
     }
 }

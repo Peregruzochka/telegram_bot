@@ -21,15 +21,14 @@ public class TeachersAttribute extends BaseAttribute {
 
     public String generateText(LessonDto lesson) {
         String lessonName = lesson.getName();
+
         return super.text.replace("{}", lessonName);
     }
 
     public InlineKeyboardMarkup generateTeacherMarkup(List<TeacherDto> teachers) {
         List<List<InlineKeyboardButton>> newButtons = teachers.stream()
-                .map(teacherDto -> createButton(teacherDto.getName(), mainCallbacks + teacherDto.getId()))
-                .map(List::of)
+                .map(teacherDto -> List.of(createButton(teacherDto.getName(), mainCallbacks + teacherDto.getId())))
                 .toList();
-
         return generateMarkup(newButtons);
     }
 }
