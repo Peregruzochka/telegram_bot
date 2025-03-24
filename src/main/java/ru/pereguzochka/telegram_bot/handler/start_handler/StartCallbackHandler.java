@@ -1,64 +1,54 @@
 package ru.pereguzochka.telegram_bot.handler.start_handler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
-import ru.pereguzochka.telegram_bot.cache.RegistrationCache;
-import ru.pereguzochka.telegram_bot.cache.UserDtoCache;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
-import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.UsersByTelegramId;
 
-import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.NEW_USER;
-import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.REGULAR_USER;
-import static ru.pereguzochka.telegram_bot.dto.RegistrationDto.RegistrationType.RE_REGISTRATION;
+import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.NEW;
+import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.REGULAR;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StartCallbackHandler implements UpdateHandler {
+    private final TelegramBot telegramBot;
+    private final BotBackendClient botBackendClient;
+    private final UsersByTelegramId usersByTelegramId;
     private final FirstStartAttribute firstStartAttribute;
     private final StartAttribute startAttribute;
-    private final TelegramBot bot;
-    private final RegistrationCache cache;
-    private final BotBackendClient backendClient;
-    private final UserDtoCache userDtoCache;
+
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().equals("/start");
+        return hasCallback(update, "/start");
     }
 
     @Override
     public void compute(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        RegistrationDto registrationDto = cache.get(telegramId);
-        if (registrationDto == null) {
-            UserDto userDto = backendClient.getUserByTelegramId(telegramId);
-            if (userDto == null) {
-                bot.edit(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
-            } else {
-                RegistrationDto newRegistrationDto = createRegistrationDtoForRegularUser(userDto);
-                cache.put(telegramId, newRegistrationDto);
-                userDtoCache.put(telegramId, userDto);
-                bot.edit(startAttribute.createText(userDto.getName()), startAttribute.createMarkup(), update);
-            }
-        } else {
-            if (registrationDto.getType().equals(REGULAR_USER) || registrationDto.getType().equals(RE_REGISTRATION)) {
-                String username = registrationDto.getUser().getName();
-                bot.edit(startAttribute.createText(username), startAttribute.createMarkup(), update);
-            } else if (registrationDto.getType().equals(NEW_USER)) {
-                bot.edit(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
-            }
-        }
-    }
+        Long telegramId = telegramBot.extractTelegramId(update);
 
-    private RegistrationDto createRegistrationDtoForRegularUser(UserDto userDto) {
-        return RegistrationDto.builder()
-                .telegramId(userDto.getTelegramId())
-                .user(userDto)
-                .type(REGULAR_USER)
-                .build();
+        UserDto userDto = botBackendClient.getUserByTelegramId(telegramId);
+        if (userDto == null) {
+            userDto = new UserDto();
+            userDto.setTelegramId(telegramId);
+            userDto.setStatus(NEW);
+        }
+
+        usersByTelegramId.put(telegramId.toString(), userDto);
+
+        if (userDto.getStatus() == NEW) {
+            telegramBot.edit(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
+        } else if (userDto.getStatus() == REGULAR) {
+            String userName = userDto.getName();
+            telegramBot.edit(startAttribute.createText(userName), startAttribute.createMarkup(), update);
+        }
+
+        log.info("telegramId: {} -> /start: {}", telegramId, userDto.getStatus().toString());
     }
 }

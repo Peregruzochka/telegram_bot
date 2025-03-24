@@ -71,6 +71,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         return token;
     }
 
+    public Long extractTelegramId(Update update) {
+        if (update.hasMessage()) {
+            return update.getMessage().getFrom().getId();
+        } else if (update.hasCallbackQuery()) {
+            return update.getCallbackQuery().getFrom().getId();
+        }
+        throw new IllegalArgumentException("Update has no message or callback");
+    }
+
     public void send(String text, Update update) {
         Long chatId = -1L;
         if (update.hasMessage()) {

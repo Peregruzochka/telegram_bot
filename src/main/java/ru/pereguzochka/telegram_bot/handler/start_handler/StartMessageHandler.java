@@ -26,11 +26,12 @@ public class StartMessageHandler implements UpdateHandler {
     private final TelegramBot telegramBot;
 
     public boolean isApplicable(Update update) {
-        return update.hasMessage() && update.getMessage().getText().equals("/start");
+        return hasMessage(update, "/start");
     }
 
     public void compute(Update update) {
-        Long telegramId = update.getMessage().getFrom().getId();
+        Long telegramId = telegramBot.extractTelegramId(update);
+
         UserDto userDto = botBackendClient.getUserByTelegramId(telegramId);
         if (userDto == null) {
             userDto = new UserDto();
