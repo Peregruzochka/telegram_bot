@@ -11,9 +11,11 @@ import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Getter
@@ -23,13 +25,15 @@ public class TimeSlotAttribute extends BaseAttribute {
 
     private String timeSlotCallback;
 
-    public String generateText(LessonDto lesson, TeacherDto teacher) {
+    public String generateText(LessonDto lesson, TeacherDto teacher, LocalDate date) {
         String lessonName = lesson.getName();
         String teacherName = teacher.getName();
+        String dateString = localDateToString(date);
 
         return super.text
                 .replace("{0}", lessonName)
-                .replace("{1}", teacherName);
+                .replace("{1}", teacherName)
+                .replace("{2}", dateString);
     }
 
     public InlineKeyboardMarkup createTimeMarkup(List<TimeSlotDto> timeSlots) {
@@ -47,5 +51,10 @@ public class TimeSlotAttribute extends BaseAttribute {
         String startTime = timeSlotDto.getStartTime().format(FORMATTER);
         String endTime = timeSlotDto.getEndTime().format(FORMATTER);
         return startTime + " - " + endTime;
+    }
+
+    private String localDateToString(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, dd MMMM", new Locale("ru"));
+        return date.format(formatter);
     }
 }

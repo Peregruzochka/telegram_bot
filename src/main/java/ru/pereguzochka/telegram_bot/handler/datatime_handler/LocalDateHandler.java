@@ -49,7 +49,7 @@ public class LocalDateHandler implements UpdateHandler {
 
         List<TimeSlotDto> timeslots = botBackendClient.getTeacherAvailableTimeSlotsByDate(teacher.getId(), localDate);
 
-        String text = timeSlotAttribute.generateText(lesson, teacher);
+        String text = timeSlotAttribute.generateText(lesson, teacher, localDate);
         InlineKeyboardMarkup markup = timeSlotAttribute.createTimeMarkup(timeslots);
 
         bot.edit(text, markup, update);
