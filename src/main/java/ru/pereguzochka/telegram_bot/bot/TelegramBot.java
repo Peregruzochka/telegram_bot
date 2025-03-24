@@ -51,7 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info(update.toString());
+        log.debug(update.toString());
 
         UpdateHandler handler = handlers.stream()
                 .filter(updateHandler -> updateHandler.isApplicable(update))
