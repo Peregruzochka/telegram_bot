@@ -16,6 +16,10 @@ public interface UpdateHandler {
         return update.hasMessage() && update.getMessage().getText().equals(value);
     }
 
+    default boolean hasMessage(Update update, boolean value) {
+        return update.hasMessage() && value;
+    }
+
     default boolean callbackStartWith(Update update, String value) {
         return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith(value);
     }

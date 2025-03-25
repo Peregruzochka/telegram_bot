@@ -30,13 +30,16 @@ public interface BotBackendClient {
     LessonDto getLesson(@PathVariable("lesson-id") UUID id);
 
     @GetMapping("/images/{image-id}")
-    ImageDto getImageById(@PathVariable(name = "image-id") UUID imageId);
+    ImageDto getImageById(@PathVariable("image-id") UUID imageId);
 
     @GetMapping("/timeslots/next-month-search")
     List<TimeSlotDto> getTeacherTimeSlotsInNextMonth(@RequestParam("teacher-id") UUID teacherId);
 
     @GetMapping("/timeslots/available-by-date")
     List<TimeSlotDto> getTeacherAvailableTimeSlotsByDate(@RequestParam("teacher-id") UUID teacherId, @RequestParam LocalDate date);
+
+    @GetMapping("/timeslots/{timeslot-id}")
+    TimeSlotDto getTimeSlot(@PathVariable("timeslot-id") UUID timeslotId);
 
     @PostMapping("/registrations")
     RegistrationDto addRegistration(@RequestBody RegistrationDto registrationDto);
