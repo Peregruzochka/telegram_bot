@@ -9,6 +9,7 @@ public abstract class FlagByTelegramId extends RedisRepository<String, Boolean> 
 
     protected FlagByTelegramId(RedisTemplate<String, Serializable> redisTemplate, ObjectMapper objectMapper) {
         super(redisTemplate, objectMapper);
+//        setDefault(Boolean.FALSE);
     }
 
     public boolean isTrue(String telegramId) {

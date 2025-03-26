@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.input;
+package ru.pereguzochka.telegram_bot.handler.new_user_input;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -7,46 +7,45 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.InputChildBirthdayByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.InputUserNameByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.InputChildNameByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedChildByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
-
 @Component
 @RequiredArgsConstructor
-public class InputChildBirthdayHandler implements UpdateHandler {
-
+public class InputChildNameHandler implements UpdateHandler {
     private final TelegramBot telegramBot;
-    private final InputChildBirthdayByTelegramId inputChildBirthdayByTelegramId;
+    private final InputChildNameByTelegramId inputChildNameByTelegramId;
     private final SelectedChildByTelegramId selectedChildByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
-    private final InputUserNameAttribute inputUserNameAttribute;
-    private final InputUserNameByTelegramId inputUserNameByTelegramId;
+    private final InputChildBirthdayByTelegramId inputChildBirthdayByTelegramId;
+    private final InputChildBirthdayAttribute inputChildBirthdayAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
         String telegramId = telegramBot.extractTelegramId(update).toString();
-        boolean value = inputChildBirthdayByTelegramId.isTrue(telegramId);
+        boolean value = inputChildNameByTelegramId.isTrue(telegramId);
         return hasMessage(update, value);
     }
 
     @Override
     public void compute(Update update) {
         String telegramId = telegramBot.extractTelegramId(update).toString();
-        inputChildBirthdayByTelegramId.setFalse(telegramId);
+        inputChildNameByTelegramId.setFalse(telegramId);
 
-        String childBirthday = update.getMessage().getText();
-        ChildDto newChild = selectedChildByTelegramId.get(telegramId, ChildDto.class).orElse(null);
-        if (newChild == null) {
+        String childName = update.getMessage().getText();
+        ChildDto childDto = selectedChildByTelegramId.get(telegramId, ChildDto.class).orElse(null);
+
+        if (childDto == null) {
             restartBotMessageSender.send(update);
             return;
         }
 
-        newChild.setBirthday(childBirthday);
-        selectedChildByTelegramId.put(telegramId, newChild);
+        childDto.setName(childName);
+        selectedChildByTelegramId.put(telegramId, childDto);
 
-        String text = inputUserNameAttribute.getText();
+        String text = inputChildBirthdayAttribute.getText();
         telegramBot.send(text, update);
-        inputUserNameByTelegramId.setTrue(telegramId);
+        inputChildBirthdayByTelegramId.setTrue(telegramId);
     }
 }

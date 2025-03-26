@@ -35,9 +35,12 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
 
         if (value != null) {
             V result = objectMapper.convertValue(value, clazz);
+            log.info("{}: get {}={}", mapName, key, result);
             return Optional.of(result);
         }
-        return Optional.empty();
+        Optional<V> result = Optional.empty();
+        log.info("{}: get {}={}", mapName, key, result);
+        return result;
     }
 
     public void delete(K key) {
@@ -53,9 +56,17 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
         return status;
     }
 
+    protected void setDefault(V value) {
+        checkMapName();
+        hashOperations.keys(mapName).forEach(k -> hashOperations.put(mapName, k, value));
+        log.info("{}: setDefault {}", mapName, value);
+    }
+
     private void checkMapName() {
         if (mapName == null) {
             throw new IllegalStateException("mapName is null");
         }
     }
+
+
 }

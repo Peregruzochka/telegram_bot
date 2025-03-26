@@ -1,17 +1,29 @@
-package ru.pereguzochka.telegram_bot.handler.input;
+package ru.pereguzochka.telegram_bot.handler.new_user_input;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.dto.ChildDto;
+import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.TeacherDto;
+import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
+import ru.pereguzochka.telegram_bot.handler.edit_and_confirm_user_data.DataConfirmationAttribute;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.InputUserPhoneByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedChildByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedLessonByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedTeacherByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedTimeSlotByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.UsersByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 import ru.pereguzochka.telegram_bot.tools.PhoneNumberFormatter;
 import ru.pereguzochka.telegram_bot.tools.PhoneNumberValidator;
 
 @Component
+@RequiredArgsConstructor
 public class InputUserPhoneHandler implements UpdateHandler {
 
     private final TelegramBot telegramBot;
@@ -21,16 +33,11 @@ public class InputUserPhoneHandler implements UpdateHandler {
     private final UsersByTelegramId usersByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
     private final InputUserPhoneAttribute inputUserPhoneAttribute;
-
-    public InputUserPhoneHandler(TelegramBot telegramBot, InputUserPhoneByTelegramId inputUserPhoneByTelegramId, PhoneNumberValidator phoneNumberValidator, PhoneNumberFormatter phoneNumberFormatter, UsersByTelegramId usersByTelegramId, RestartBotMessageSender restartBotMessageSender, InputUserPhoneAttribute inputUserPhoneAttribute) {
-        this.telegramBot = telegramBot;
-        this.inputUserPhoneByTelegramId = inputUserPhoneByTelegramId;
-        this.phoneNumberValidator = phoneNumberValidator;
-        this.phoneNumberFormatter = phoneNumberFormatter;
-        this.usersByTelegramId = usersByTelegramId;
-        this.restartBotMessageSender = restartBotMessageSender;
-        this.inputUserPhoneAttribute = inputUserPhoneAttribute;
-    }
+    private final SelectedLessonByTelegramId selectedLessonByTelegramId;
+    private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
+    private final SelectedTimeSlotByTelegramId selectedTimeSlotByTelegramId;
+    private final SelectedChildByTelegramId selectedChildByTelegramId;
+    private final DataConfirmationAttribute dataConfirmationAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -57,7 +64,20 @@ public class InputUserPhoneHandler implements UpdateHandler {
             newUser.setPhone(editedPhone);
             usersByTelegramId.put(telegramId, newUser);
 
-            telegramBot.send("FINISH", update);
+            LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
+            TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
+            TimeSlotDto timeslot = selectedTimeSlotByTelegramId.get(telegramId, TimeSlotDto.class).orElse(null);
+            ChildDto child = selectedChildByTelegramId.get(telegramId, ChildDto.class).orElse(null);
+
+            if (lesson == null || teacher == null || timeslot == null || child == null) {
+                restartBotMessageSender.send(update);
+                return;
+            }
+
+            String text = dataConfirmationAttribute.generateDataConfirmationText(lesson, teacher, timeslot, child, newUser);
+            InlineKeyboardMarkup markup = dataConfirmationAttribute.createMarkup();
+
+            telegramBot.send(text, markup, update);
         } else {
             String text = inputUserPhoneAttribute.getErrorText();
             telegramBot.send(text, update);

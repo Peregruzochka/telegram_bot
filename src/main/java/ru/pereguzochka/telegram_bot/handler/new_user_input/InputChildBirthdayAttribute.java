@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.input;
+package ru.pereguzochka.telegram_bot.handler.new_user_input;
 
 import lombok.Getter;
 import lombok.Setter;
