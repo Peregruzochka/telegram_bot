@@ -6,9 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.InputChildBirthdayByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.InputUserNameByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedChildByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.flag_cache.InputChildBirthdayByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.flag_cache.InputUserNameByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedChildByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 

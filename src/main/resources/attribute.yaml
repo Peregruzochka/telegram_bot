@@ -190,7 +190,7 @@ attr:
       - /data-confirmation
 
     edit-phone-button: Изменить номер
-    edit-phone-callback: /edit
+    edit-phone-callback: /edit-phone
 
   finish:
     text: |

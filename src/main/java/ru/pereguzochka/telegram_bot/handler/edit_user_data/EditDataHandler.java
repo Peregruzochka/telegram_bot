@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.edit_and_confirm_user_data;
+package ru.pereguzochka.telegram_bot.handler.edit_user_data;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,8 +8,8 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedChildByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.UsersByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedChildByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.NEW;

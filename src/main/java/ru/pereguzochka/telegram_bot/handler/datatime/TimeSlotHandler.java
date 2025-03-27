@@ -12,10 +12,10 @@ import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.handler.children.ChooseChildAttribute;
 import ru.pereguzochka.telegram_bot.handler.new_user_input.InputChildNameAttribute;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.InputChildNameByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedChildByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedTimeSlotByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.UsersByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.flag_cache.InputChildNameByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedChildByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTimeSlotByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.util.List;

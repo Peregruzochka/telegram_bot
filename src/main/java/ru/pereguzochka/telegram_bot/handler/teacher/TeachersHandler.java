@@ -8,7 +8,7 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedLessonByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.util.List;

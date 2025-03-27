@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.edit_and_confirm_user_data;
+package ru.pereguzochka.telegram_bot.handler.edit_user_data;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,12 +11,12 @@ import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.InputAddChildBirthdayByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedChildByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedLessonByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedTeacherByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedTimeSlotByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.UsersByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.flag_cache.InputAddChildBirthdayByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedChildByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTimeSlotByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 @Component

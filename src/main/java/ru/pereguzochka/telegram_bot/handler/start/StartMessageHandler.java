@@ -8,7 +8,7 @@ import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.UsersByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 
 import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.NEW;
 import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.REGULAR;
