@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
+import ru.pereguzochka.telegram_bot.handler.MainMenuPortAttribute;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 
 import java.util.UUID;

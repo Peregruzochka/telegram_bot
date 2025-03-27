@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
-import ru.pereguzochka.telegram_bot.cache.UserDtoCache;
-import ru.pereguzochka.telegram_bot.cache.UserRegistrationPoolCache;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -22,9 +20,7 @@ public class CancelHandler implements UpdateHandler {
 
     private final TelegramBot bot;
     private final BotBackendClient backendClient;
-    private final UserDtoCache userDtoCache;
     private final CancelChooseRegistrationAttribute cancelChooseRegistrationAttribute;
-    private final UserRegistrationPoolCache userRegistrationPoolCache;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -33,20 +29,20 @@ public class CancelHandler implements UpdateHandler {
 
     @Override
     public void compute(Update update) {
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
-        UUID userId = userDtoCache.get(telegramId).getId();
-        List<RegistrationDto> userRegistrations = backendClient.getAllUserRegistrations(userId);
-
-        Map<UUID, RegistrationDto> userRegistrationMap = userRegistrations.stream()
-                .collect(Collectors.toMap(RegistrationDto::getId, Function.identity()));
-
-        userRegistrationPoolCache.put(telegramId, userRegistrationMap);
-
-
-        bot.edit(
-                cancelChooseRegistrationAttribute.generateText(userRegistrations),
-                cancelChooseRegistrationAttribute.generateReRegistrationMarkup(userRegistrations),
-                update
-        );
+//        Long telegramId = update.getCallbackQuery().getFrom().getId();
+//        UUID userId = userDtoCache.get(telegramId).getId();
+//        List<RegistrationDto> userRegistrations = backendClient.getAllUserRegistrations(userId);
+//
+//        Map<UUID, RegistrationDto> userRegistrationMap = userRegistrations.stream()
+//                .collect(Collectors.toMap(RegistrationDto::getId, Function.identity()));
+//
+//        userRegistrationPoolCache.put(telegramId, userRegistrationMap);
+//
+//
+//        bot.edit(
+//                cancelChooseRegistrationAttribute.generateText(userRegistrations),
+//                cancelChooseRegistrationAttribute.generateReRegistrationMarkup(userRegistrations),
+//                update
+//        );
     }
 }

@@ -1,4 +1,4 @@
-package ru.pereguzochka.telegram_bot.handler.finish_handler;
+package ru.pereguzochka.telegram_bot.handler.confirm_user_data;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

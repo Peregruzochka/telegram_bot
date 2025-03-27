@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.dto.RegistrationEvent;
-import ru.pereguzochka.telegram_bot.handler.not_confirmed.MainMenuPortAttribute;
+import ru.pereguzochka.telegram_bot.handler.MainMenuPortAttribute;
 
 
 @Component

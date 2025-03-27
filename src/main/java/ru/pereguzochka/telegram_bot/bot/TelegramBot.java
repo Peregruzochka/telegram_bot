@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -15,20 +14,16 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
-import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.pereguzochka.telegram_bot.cache.FileIDCache;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.FileIdCache;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 
 @Slf4j
@@ -41,12 +36,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private String token;
 
     private final List<UpdateHandler> handlers;
-    private final FileIDCache fileIDCache;
+    private final FileIdCache fileIdCache;
 
-    public TelegramBot(@Lazy List<UpdateHandler> handlers,
-                       FileIDCache fileIDCache) {
+    public TelegramBot(@Lazy List<UpdateHandler> handlers, @Lazy FileIdCache fileIdCache) {
         this.handlers = handlers;
-        this.fileIDCache = fileIDCache;
+        this.fileIdCache = fileIdCache;
     }
 
     @Override
@@ -261,7 +255,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    public Integer sendImage(ImageDto imageDto, String text, InlineKeyboardMarkup markup, Update update) {
+    public void sendImage(ImageDto imageDto, String text, InlineKeyboardMarkup markup, Update update) {
         InputFile inputFile = createInputFile(imageDto);
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
 
@@ -275,70 +269,22 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             Message message = execute(sendPhoto);
-            fileIDCache.put(imageDto.getId(), message.getPhoto().get(0).getFileId());
-            return message.getMessageId();
+            String imageUuid = imageDto.getId().toString();
+            String fileId = message.getPhoto().get(0).getFileId();
+            fileIdCache.put(imageUuid, fileId);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-
-    public List<Integer> sendImages(List<ImageDto> images, Update update) {
-        List<InputMedia> mediaPhotos = images.stream()
-                .map(this::createInputMedia)
-                .toList();
-
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-
-        SendMediaGroup mediaGroup = SendMediaGroup.builder()
-                .chatId(chatId)
-                .medias(mediaPhotos)
-                .build();
-
-        try {
-            List<Message> messages = this.execute(mediaGroup);
-
-            for (int i = 0; i < images.size(); i++) {
-                UUID imageId = images.get(i).getId();
-                String telegramFileId = messages.get(i).getPhoto().get(0).getFileId();
-                fileIDCache.put(imageId, telegramFileId);
-            }
-
-            return messages.stream()
-                    .map(Message::getMessageId)
-                    .toList();
-
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private InputMedia createInputMedia(ImageDto imageDto) {
-        if (!fileIDCache.contains(imageDto.getId())) {
-            byte[] imageBytes = imageDto.getImage();
-            InputStream imageStream = new ByteArrayInputStream(imageBytes);
-            return InputMediaPhoto.builder()
-                    .media("attach://" + imageDto.getFilename())
-                    .isNewMedia(true)
-                    .mediaName(imageDto.getFilename())
-                    .newMediaStream(imageStream)
-                    .build();
-        } else {
-            String telegramFileId = fileIDCache.get(imageDto.getId());
-            return InputMediaPhoto.builder()
-                    .media(telegramFileId)
-                    .isNewMedia(false)
-                    .build();
         }
     }
 
     private InputFile createInputFile(ImageDto imageDto) {
-        if (!fileIDCache.contains(imageDto.getId())) {
+        String imageUuid = imageDto.getId().toString();
+        if (!fileIdCache.exists(imageUuid)) {
             byte[] imageBytes = imageDto.getImage();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
             return new InputFile(inputStream, imageDto.getFilename());
         } else {
-            String telegramFileId = fileIDCache.get(imageDto.getId());
+            String telegramFileId = fileIdCache.get(imageUuid, String.class).orElseThrow();
             return new InputFile(telegramFileId);
         }
     }
