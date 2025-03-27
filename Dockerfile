@@ -13,10 +13,20 @@ COPY . .
 RUN ./gradlew build -x test
 
 FROM openjdk:17-jdk-slim
+
+ENV TZ=Europe/Moscow
+RUN apt-get update && apt-get install -y tzdata && \
+    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
 ENV ARTIFACT_NAME=telegram_bot-0.0.1-SNAPSHOT.jar
 ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 
 COPY --from=build_project $APP_HOME/build/libs/$ARTIFACT_NAME app.jar
+
+RUN mkdir -p $APP_HOME/src/main/resources/qr_code/
+COPY --from=build_project $APP_HOME/src/main/resources/qr_code/ $APP_HOME/src/main/resources/qr_code/
+
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
