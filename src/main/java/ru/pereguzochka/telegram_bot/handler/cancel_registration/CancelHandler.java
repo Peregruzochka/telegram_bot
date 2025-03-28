@@ -35,7 +35,7 @@ public class CancelHandler implements UpdateHandler {
     public void compute(Update update) {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         UUID userId = userDtoCache.get(telegramId).getId();
-        List<RegistrationDto> userRegistrations = backendClient.getAllUserRegistrations(userId);
+        List<RegistrationDto> userRegistrations = backendClient.getAllActualUserRegistrations(userId);
 
         Map<UUID, RegistrationDto> userRegistrationMap = userRegistrations.stream()
                 .collect(Collectors.toMap(RegistrationDto::getId, Function.identity()));

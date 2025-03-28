@@ -33,7 +33,7 @@ public class ReRegistrationHandler implements UpdateHandler {
     public void compute(Update update) {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         UUID userId = registrationCache.get(telegramId).getUser().getId();
-        List<RegistrationDto> registrationDtoList = botBackendClient.getAllUserRegistrations(userId);
+        List<RegistrationDto> registrationDtoList = botBackendClient.getAllActualUserRegistrations(userId);
         Map<UUID, RegistrationDto> registrationMap = registrationDtoList.stream().
                 collect(Collectors.toMap(RegistrationDto::getId, registration -> registration));
         userRegistrationPoolCache.put(telegramId, registrationMap);

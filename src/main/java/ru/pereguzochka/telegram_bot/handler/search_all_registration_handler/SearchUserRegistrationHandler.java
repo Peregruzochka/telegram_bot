@@ -29,7 +29,7 @@ public class SearchUserRegistrationHandler implements UpdateHandler {
     public void compute(Update update) {
         Long telegramId = update.getCallbackQuery().getFrom().getId();
         UUID userId = registrationCache.get(telegramId).getUser().getId();
-        List<RegistrationDto> registrations = botBackendClient.getAllUserRegistrations(userId);
+        List<RegistrationDto> registrations = botBackendClient.getAllActualUserRegistrations(userId);
         bot.edit(searchUserRegistrationAttribute.generateText(registrations), searchUserRegistrationAttribute.createMarkup(), update);
     }
 }

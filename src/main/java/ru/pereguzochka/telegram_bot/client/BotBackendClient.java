@@ -37,8 +37,8 @@ public interface BotBackendClient {
     @PostMapping("/registrations/update")
     RegistrationDto updateRegistration(@RequestBody RegistrationDto registrationDto);
 
-    @GetMapping("/registrations")
-    List<RegistrationDto> getAllUserRegistrations(@RequestParam("user-id") UUID userId);
+    @GetMapping("/registrations/actual")
+    List<RegistrationDto> getAllActualUserRegistrations(@RequestParam("user-id") UUID userId);
 
     @PutMapping("/registrations/{registration-id}/confirm")
     RegistrationDto confirmRegistration(@PathVariable("registration-id") UUID registrationId);
