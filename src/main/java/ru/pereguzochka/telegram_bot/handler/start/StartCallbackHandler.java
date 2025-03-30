@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
+import ru.pereguzochka.telegram_bot.dto.ChildDto.ChildStatus;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
+import ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 
@@ -38,6 +40,9 @@ public class StartCallbackHandler implements UpdateHandler {
             userDto = new UserDto();
             userDto.setTelegramId(telegramId);
             userDto.setStatus(NEW);
+        } else {
+            userDto.setStatus(UserStatus.REGULAR);
+            userDto.getChildren().forEach(childDto -> childDto.setStatus(ChildStatus.REGULAR));
         }
 
         usersByTelegramId.put(telegramId.toString(), userDto);

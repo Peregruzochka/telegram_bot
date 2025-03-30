@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
+import ru.pereguzochka.telegram_bot.dto.ChildDto.ChildStatus;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
+import ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 
 import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.NEW;
-import static ru.pereguzochka.telegram_bot.dto.UserDto.UserStatus.REGULAR;
 
 @Slf4j
 @Component
@@ -37,13 +38,16 @@ public class StartMessageHandler implements UpdateHandler {
             userDto = new UserDto();
             userDto.setTelegramId(telegramId);
             userDto.setStatus(NEW);
+        } else {
+            userDto.setStatus(UserStatus.REGULAR);
+            userDto.getChildren().forEach(childDto -> childDto.setStatus(ChildStatus.REGULAR));
         }
 
         usersByTelegramId.put(telegramId.toString(), userDto);
 
         if (userDto.getStatus() == NEW) {
             telegramBot.send(firstStartAttribute.getText(), firstStartAttribute.createMarkup(), update);
-        } else if (userDto.getStatus() == REGULAR) {
+        } else if (userDto.getStatus() == UserStatus.REGULAR) {
             String userName = userDto.getName();
             telegramBot.send(startAttribute.createText(userName), startAttribute.createMarkup(), update);
         }

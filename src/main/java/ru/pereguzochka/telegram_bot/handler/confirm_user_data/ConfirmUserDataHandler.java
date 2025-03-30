@@ -67,7 +67,7 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                 .build();
 
         try {
-//            botBackendClient.addRegistration(registrationDto);
+            botBackendClient.addRegistration(registrationDto);
             String text = finishAttribute.generateText(lesson, teacher, timeslot, child);
             bot.delete(update);
             bot.send(text, update);
