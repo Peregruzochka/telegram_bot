@@ -39,5 +39,7 @@ public class CancelCaseHandler implements UpdateHandler {
                 cancelFinishAttribute.createMarkup(),
                 update
         );
+
+        registrationCache.remove(telegramId);
     }
 }
