@@ -1,17 +1,23 @@
 package ru.pereguzochka.telegram_bot.handler.datatime;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
+import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.handler.children.ChooseChildAttribute;
+import ru.pereguzochka.telegram_bot.handler.edit_user_data.DataConfirmationAttribute;
 import ru.pereguzochka.telegram_bot.handler.new_user_input.InputChildNameAttribute;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.flag_cache.InputChildNameByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedChildByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTimeSlotByTelegramId;
@@ -23,6 +29,7 @@ import java.util.UUID;
 
 import static ru.pereguzochka.telegram_bot.dto.ChildDto.ChildStatus.NEW;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TimeSlotHandler implements UpdateHandler {
@@ -36,6 +43,9 @@ public class TimeSlotHandler implements UpdateHandler {
     private final ChooseChildAttribute chooseChildAttribute;
     private final InputChildNameAttribute inputChildNameAttribute;
     private final InputChildNameByTelegramId inputChildNameByTelegramId;
+    private final SelectedLessonByTelegramId selectedLessonByTelegramId;
+    private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
+    private final DataConfirmationAttribute dataConfirmationAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -71,12 +81,24 @@ public class TimeSlotHandler implements UpdateHandler {
         } else if (children.size() == 1) {
             ChildDto child = children.get(0);
             selectedChildByTelegramId.put(telegramId, child);
+
+            LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
+            TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
+
+            if (lesson == null || teacher == null) {
+                restartBotMessageSender.send(update);
+                return;
+            }
+
+            String text = dataConfirmationAttribute.generateDataConfirmationText(lesson, teacher, timeSlotDto, child, user);
+            InlineKeyboardMarkup markup = dataConfirmationAttribute.createMarkup();
+            telegramBot.edit(text, markup, update);
         } else {
             String text = chooseChildAttribute.getText();
             InlineKeyboardMarkup markup = chooseChildAttribute.generateChildMarkup(children);
             telegramBot.edit(text, markup, update);
         }
 
-
+        log.info("telegramId: {} -> /time-slot: {}", telegramId, timeSlotDto.getId());
     }
 }
