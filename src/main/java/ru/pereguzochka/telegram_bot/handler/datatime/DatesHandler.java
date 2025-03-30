@@ -63,6 +63,6 @@ public class DatesHandler implements UpdateHandler {
             bot.edit(text, markup, update);
         }
 
-        log.info("telegramId: {}, -> {}", telegramId, callback);
+        log.info("telegramId: {} -> {}", telegramId, callback);
     }
 }

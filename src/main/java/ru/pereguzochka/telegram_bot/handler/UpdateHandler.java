@@ -23,4 +23,9 @@ public interface UpdateHandler {
     default boolean callbackStartWith(Update update, String value) {
         return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith(value);
     }
+
+    default String getCallbackPayload(Update update, String overhead) {
+        return update.getCallbackQuery().getData().replace(overhead, "");
+    }
+
 }
