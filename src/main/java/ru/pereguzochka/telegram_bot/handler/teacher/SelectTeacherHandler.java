@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.teacher;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -9,13 +10,17 @@ import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
+import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
+import ru.pereguzochka.telegram_bot.handler.datatime.DatesAttribute;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SelectTeacherHandler implements UpdateHandler {
@@ -25,6 +30,7 @@ public class SelectTeacherHandler implements UpdateHandler {
     private final TeacherDescriptionAttribute teacherDescriptionAttribute;
     private final TelegramBot telegramBot;
     private final BotBackendClient botBackendClient;
+    private final DatesAttribute datesAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -52,14 +58,24 @@ public class SelectTeacherHandler implements UpdateHandler {
         }
 
         selectedTeacherByTelegramId.put(telegramId, teacher);
+        if (teacher.isHidden()) {
+            List<TimeSlotDto> timeslots = botBackendClient.getTeacherTimeSlotsInNextMonth(teacherId);
 
-        String text = teacherDescriptionAttribute.generateText(lesson, teacher);
-        InlineKeyboardMarkup markup = teacherDescriptionAttribute.createMarkup();
+            String text = datesAttribute.generateText(lesson, teacher);
+            InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(timeslots, 0);
+            telegramBot.edit(text, markup, update);
 
-        UUID imageId = teacher.getImageID();
-        ImageDto image = botBackendClient.getImageById(imageId);
+        } else {
+            String text = teacherDescriptionAttribute.generateText(lesson, teacher);
+            InlineKeyboardMarkup markup = teacherDescriptionAttribute.createMarkup();
 
-        telegramBot.delete(update);
-        telegramBot.sendImage(image, text, markup, update);
+            UUID imageId = teacher.getImageID();
+            ImageDto image = botBackendClient.getImageById(imageId);
+
+            telegramBot.delete(update);
+            telegramBot.sendImage(image, text, markup, update);
+        }
+
+        log.info("telegramId: {} -> /select-teacher={}", telegramId, teacherId);
     }
 }
