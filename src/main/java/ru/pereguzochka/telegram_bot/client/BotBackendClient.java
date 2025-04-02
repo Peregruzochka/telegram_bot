@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
+import ru.pereguzochka.telegram_bot.dto.CreateAtRegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
@@ -44,11 +45,14 @@ public interface BotBackendClient {
     @PostMapping("/registrations")
     RegistrationDto addRegistration(@RequestBody RegistrationDto registrationDto);
 
-    @PostMapping("/registrations/update")
-    RegistrationDto updateRegistration(@RequestBody RegistrationDto registrationDto);
+    @GetMapping("/registrations/{id}/created-at")
+    CreateAtRegistrationDto getCreatedAt(@PathVariable("id") UUID id);
 
-    @GetMapping("/registrations")
-    List<RegistrationDto> getAllUserRegistrations(@RequestParam("user-id") UUID userId);
+    @GetMapping("/registrations/actual")
+    List<RegistrationDto> getAllUserActualRegistrations(@RequestParam("user-id") UUID userId);
+
+    @GetMapping("/registrations/{id}")
+    RegistrationDto getRegistration(@PathVariable("id") UUID id);
 
     @PutMapping("/registrations/{registration-id}/confirm")
     RegistrationDto confirmRegistration(@PathVariable("registration-id") UUID registrationId);
