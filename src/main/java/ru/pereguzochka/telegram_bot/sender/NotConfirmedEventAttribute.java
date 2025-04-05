@@ -48,7 +48,7 @@ public class NotConfirmedEventAttribute {
     }
 
     private String convertToDate(LocalDateTime time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, d MMMM yyyy", new Locale("ru"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, d MMMM", new Locale("ru"));
         return time.format(formatter);
     }
 

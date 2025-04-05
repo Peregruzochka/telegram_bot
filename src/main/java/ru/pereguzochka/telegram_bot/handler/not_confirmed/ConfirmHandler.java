@@ -34,7 +34,8 @@ public class ConfirmHandler implements UpdateHandler {
         UUID registrationId = UUID.fromString(update.getCallbackQuery().getData().replace("/first-confirm:", ""));
         backendClient.confirmRegistration(registrationId);
 
-        telegramBot.delete(update);
+
+        telegramBot.answer(update);
         telegramBot.sendImage(qrCodeUrl, confirmMessageAttribute.getText(), update);
         telegramBot.send(mainMenuPortAttribute.getText(), mainMenuPortAttribute.createMarkup(), update);
     }

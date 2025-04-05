@@ -29,7 +29,8 @@ public class DeclineHandler implements UpdateHandler {
 
         backendClient.declineRegistration(registrationId);
 
-        telegramBot.edit(
+        telegramBot.answer(update);
+        telegramBot.send(
                 declineMessageAttribute.getText(),
                 declineMessageAttribute.createMarkup(),
                 update
