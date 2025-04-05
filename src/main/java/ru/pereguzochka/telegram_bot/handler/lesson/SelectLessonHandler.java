@@ -23,18 +23,17 @@ public class SelectLessonHandler implements UpdateHandler {
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().startsWith("/select-lesson:");
+        return callbackStartWith(update, "/select-lesson:");
     }
 
     @Override
     public void compute(Update update) {
-        String callback = update.getCallbackQuery().getData();
-        UUID lessonId = UUID.fromString(callback.substring("/select-lesson:".length()));
-        Long telegramId = update.getCallbackQuery().getFrom().getId();
+        UUID lessonId = UUID.fromString(getCallbackPayload(update, "/select-lesson:"));
+        String telegramId = bot.extractTelegramId(update).toString();
 
         LessonDto lesson = botBackendClient.getLesson(lessonId);
 
-        selectedLessonByTelegramId.put(telegramId.toString(), lesson);
+        selectedLessonByTelegramId.put(telegramId, lesson);
 
         bot.edit(
                 lessonDescriptionAttribute.generateText(lesson),

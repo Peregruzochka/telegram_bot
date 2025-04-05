@@ -3,6 +3,7 @@ package ru.pereguzochka.telegram_bot.handler.lesson;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 

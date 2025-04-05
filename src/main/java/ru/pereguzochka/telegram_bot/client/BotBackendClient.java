@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
 import ru.pereguzochka.telegram_bot.dto.CreateAtRegistrationDto;
+import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
@@ -32,6 +33,12 @@ public interface BotBackendClient {
 
     @GetMapping("/images/{image-id}")
     ImageDto getImageById(@PathVariable("image-id") UUID imageId);
+
+    @GetMapping("/group-lessons/all")
+    List<GroupLessonDto> getAllGroupLessons();
+
+    @GetMapping("/group-lessons/{lesson-id}")
+    GroupLessonDto getGroupLesson(@PathVariable(name = "lesson-id") UUID lessonId);
 
     @GetMapping("/timeslots/next-month-search")
     List<TimeSlotDto> getTeacherTimeSlotsInNextMonth(@RequestParam("teacher-id") UUID teacherId);

@@ -26,6 +26,10 @@ attr:
   lessons:
     text: |
       <b>Выберете желаемое направление🎯</b>
+      
+      👤<i> - индивидуальные занятия</i>
+      👥<i> - групповые занятия</i>
+
     buttons:
       - « Назад
     callbacks:
@@ -43,6 +47,16 @@ attr:
       - « Назад
     callbacks:
       - /teachers
+      - /lessons
+
+  group-lesson-description:
+    text: |
+      <b>{}</b>
+    buttons:
+      - Продолжить запись »
+      - « Назад
+    callbacks:
+      - /group-teachers
       - /lessons
 
   teachers:
