@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
+import ru.pereguzochka.telegram_bot.dto.GroupRegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.handler.MainMenuPortAttribute;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class CancelCaseHandler implements UpdateHandler {
+public class GroupCancelCaseHandler implements UpdateHandler {
     private final BotBackendClient backendClient;
     private final CancelFinishAttribute cancelFinishAttribute;
     private final SelectedCancelRegistrationIdByTelegramId selectedCancelRegistrationIdByTelegramId;
@@ -27,28 +28,23 @@ public class CancelCaseHandler implements UpdateHandler {
 
     @Override
     public boolean isApplicable(Update update) {
-        return callbackStartWith(update, "/cancel-case:");
+        return callbackStartWith(update, "/group-cancel-case:");
     }
 
     @Override
     public void compute(Update update) {
-        String cancelCase = getCallbackPayload(update, "/cancel-case:");
+        String cancelCase = getCallbackPayload(update, "/group-cancel-case:");
         String telegramId = telegramBot.extractTelegramId(update).toString();
         UUID registrationId = selectedCancelRegistrationIdByTelegramId.get(telegramId, UUID.class).orElse(null);
         if (registrationId == null) {
             restartBotMessageSender.send(update);
             return;
         }
-        RegistrationDto registration = backendClient.getRegistration(registrationId);
+        GroupRegistrationDto groupRegistrationDto = backendClient.getGroupRegistration(registrationId);
 
-        CancelDto cancel = CancelDto.builder()
-                .registrationId(registrationId)
-                .caseDescription(cancelCase)
-                .build();
+        backendClient.addGroupCancel(registrationId, cancelCase);
 
-        backendClient.addCancel(cancel);
-
-        String text = cancelFinishAttribute.generateText(registration);
+        String text = cancelFinishAttribute.generateText(groupRegistrationDto);
         telegramBot.delete(update);
         telegramBot.send(text, update);
         String secondText = mainMenuPortAttribute.getText();

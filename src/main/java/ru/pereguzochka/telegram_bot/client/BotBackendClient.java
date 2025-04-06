@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
 import ru.pereguzochka.telegram_bot.dto.CreateAtRegistrationDto;
+import ru.pereguzochka.telegram_bot.dto.GroupCancelDto;
 import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
 import ru.pereguzochka.telegram_bot.dto.GroupRegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
@@ -61,6 +62,10 @@ public interface BotBackendClient {
     @GetMapping("/group-timeslots/{group-timeslot-id}")
     GroupTimeSlotDto getGroupTimeSlot(@PathVariable("group-timeslot-id") UUID groupTimeslotId);
 
+    @GetMapping("/group-timeslots/by-user-by-date")
+    List<GroupTimeSlotDto> getUserGroupTimeSlotsByDate(@RequestParam("user-id") UUID userId,
+                                                       @RequestParam("date") LocalDate date);
+
     @PostMapping("/registrations")
     RegistrationDto addRegistration(@RequestBody RegistrationDto registrationDto);
 
@@ -76,6 +81,12 @@ public interface BotBackendClient {
     @PostMapping("/group-registrations")
     GroupRegistrationDto addGroupRegistration(@RequestBody GroupRegistrationDto groupRegistrationDto);
 
+    @GetMapping("/group-registrations/actual")
+    List<GroupRegistrationDto> getAllUserActualGroupRegistrations(@RequestParam("user-id") UUID userId);
+
+    @GetMapping("/group-registrations/{group-registration-id}")
+    GroupRegistrationDto getGroupRegistration(@PathVariable("group-registration-id") UUID groupRegistrationId);
+
     @PutMapping("/registrations/{registration-id}/confirm")
     RegistrationDto confirmRegistration(@PathVariable("registration-id") UUID registrationId);
 
@@ -84,4 +95,8 @@ public interface BotBackendClient {
 
     @PostMapping("/cancellations")
     CancelDto addCancel(@RequestBody CancelDto cancelDto);
+
+    @PostMapping("/group-cancellations")
+    GroupCancelDto addGroupCancel(@RequestParam("group-registration-id") UUID registrationId,
+                                  @RequestParam("case") String caseDescription);
 }

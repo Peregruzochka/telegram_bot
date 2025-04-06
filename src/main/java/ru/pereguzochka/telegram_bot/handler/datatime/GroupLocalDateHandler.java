@@ -10,12 +10,15 @@ import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
 import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
+import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedGroupLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,6 +31,7 @@ public class GroupLocalDateHandler implements UpdateHandler {
     private final RestartBotMessageSender restartBotMessageSender;
     private final BotBackendClient botBackendClient;
     private final GroupTimeSlotAttribute groupTimeSlotAttribute;
+    private final UsersByTelegramId usersByTelegramId;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -41,13 +45,17 @@ public class GroupLocalDateHandler implements UpdateHandler {
 
         TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
         GroupLessonDto lesson = selectedGroupLessonByTelegramId.get(telegramId, GroupLessonDto.class).orElse(null);
-        if (lesson == null || teacher == null) {
+        UserDto user = usersByTelegramId.get(telegramId, UserDto.class).orElse(null);
+        if (lesson == null || teacher == null || user == null) {
             restartBotMessageSender.send(update);
             return;
         }
 
         List<GroupTimeSlotDto> timeslots = botBackendClient.getAvailableGroupTimeSlotsByDate(teacher.getId(), localDate);
-        List<GroupTimeSlotDto> userTimeslots = botBackendClient.getAvailableGroupTimeSlotsByDate(teacher.getId(), localDate);
+        List<GroupTimeSlotDto> userTimeslots = new ArrayList<>();
+        if (user.getId() != null) {
+            userTimeslots = botBackendClient.getUserGroupTimeSlotsByDate(user.getId(), localDate);
+        }
 
         String text = groupTimeSlotAttribute.generateText(lesson, teacher, localDate);
         InlineKeyboardMarkup markup = groupTimeSlotAttribute.createTimeMarkup(timeslots, userTimeslots);

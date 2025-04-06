@@ -383,6 +383,7 @@ attr:
     callbacks:
       - /start
     cancel-callback: "/cancel-registration:"
+    group-cancel-callback: "/group-cancel-registration:"
     empty-registration-text: |
       Вы не записаны не на одно занятие
     reg-pattern: |
@@ -408,6 +409,22 @@ attr:
     family-reasons-button-text: Семейные обстоятельства
     user-error-choose-button-text: Не подходит время
     cancel-case-callback: "/cancel-case:"
+
+  group-choose-case:
+    text: |
+      Выберете причину отмены занятия:
+    manual-cancel-text: |
+      Это занятие можно отменить <b>ТОЛЬКО</b> связавшись с администратором
+    buttons:
+      - Связаться с администратором
+      - « Назад
+    callbacks:
+      - /connect-to-admin
+      - /cancel
+    ill-button-text: Болезнь
+    family-reasons-button-text: Семейные обстоятельства
+    user-error-choose-button-text: Не подходит время
+    cancel-case-callback: "/group-cancel-case:"
 
 
   cancel-finish:

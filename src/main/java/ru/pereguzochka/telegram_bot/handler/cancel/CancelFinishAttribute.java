@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import ru.pereguzochka.telegram_bot.dto.GroupRegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
-import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +22,10 @@ public class CancelFinishAttribute {
     public String generateText(RegistrationDto registration) {
         String lesson = registration.getLesson().getName();
         String teacher = registration.getTeacher().getName();
-        String data = localDateToString(registration.getSlot());
-        String time = timeToString(registration.getSlot());
+        LocalDateTime start = registration.getSlot().getStartTime();
+        LocalDateTime end = registration.getSlot().getEndTime();
+        String data = localDateToString(start);
+        String time = timeToString(start, end);
         String child = registration.getChild().getName();
 
         return text
@@ -34,16 +36,31 @@ public class CancelFinishAttribute {
                 .replace("{4}", child);
     }
 
-    private String localDateToString(TimeSlotDto timeSlot) {
-        LocalDate localDate = timeSlot.getStartTime().toLocalDate();
+    public String generateText(GroupRegistrationDto registration) {
+        String lesson = registration.getTimeSlot().getGroupLesson().getName();
+        String teacher = registration.getTimeSlot().getTeacher().getName();
+        LocalDateTime startTime = registration.getTimeSlot().getStartTime();
+        LocalDateTime endTime = registration.getTimeSlot().getEndTime();
+        String data = localDateToString(startTime);
+        String time = timeToString(startTime, endTime);
+        String child = registration.getChild().getName();
+
+        return text
+                .replace("{0}", lesson)
+                .replace("{1}", teacher)
+                .replace("{2}", data)
+                .replace("{3}", time)
+                .replace("{4}", child);
+    }
+
+    private String localDateToString(LocalDateTime localDateTime) {
+        LocalDate localDate = localDateTime.toLocalDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, dd MMMM", new Locale("ru"));
         return localDate.format(formatter);
     }
 
-    private String timeToString(TimeSlotDto timeSlot) {
-        LocalDateTime startTime = timeSlot.getStartTime();
-        LocalDateTime endTime = timeSlot.getEndTime();
+    private String timeToString(LocalDateTime start, LocalDateTime end) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", new Locale("ru"));
-        return startTime.format(formatter) + " - " + endTime.format(formatter);
+        return start.format(formatter) + " - " + end.format(formatter);
     }
 }
