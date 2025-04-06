@@ -31,13 +31,12 @@ public class LocalDateHandler implements UpdateHandler {
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && update.getCallbackQuery().getData().contains("/local-date:");
+        return callbackStartWith(update, "/local-date:");
     }
 
     @Override
     public void compute(Update update) {
-        String callback = update.getCallbackQuery().getData();
-        LocalDate localDate = LocalDate.parse(callback.replace("/local-date:", ""));
+        LocalDate localDate = LocalDate.parse(getCallbackPayload(update, "/local-date:"));
         String telegramId = update.getCallbackQuery().getFrom().getId().toString();
 
         TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
@@ -54,6 +53,6 @@ public class LocalDateHandler implements UpdateHandler {
 
         bot.edit(text, markup, update);
 
-        log.info("telegramId: {} -> {}", telegramId, callback);
+        log.info("telegramId: {} -> {}", telegramId, update.getCallbackQuery().getData());
     }
 }

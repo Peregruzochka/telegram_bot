@@ -20,10 +20,12 @@ public class BackChooseChildHandler implements UpdateHandler {
     private final ChooseChildAttribute chooseChildAttribute;
     private final UsersByTelegramId usersByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
+    private final GroupChooseChildAttribute groupChooseChildAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
-        return hasCallback(update, "/back-choose-child");
+        return hasCallback(update, "/back-choose-child")
+                || hasCallback(update, "/back-group-choose-child");
     }
 
     @Override
@@ -38,8 +40,14 @@ public class BackChooseChildHandler implements UpdateHandler {
 
         List<ChildDto> children = user.getChildren();
 
-        String text = chooseChildAttribute.getText();
-        InlineKeyboardMarkup markup = chooseChildAttribute.generateChildMarkup(children);
-        telegramBot.edit(text, markup, update);
+        if (hasCallback(update, "/back-choose-child")) {
+            String text = chooseChildAttribute.getText();
+            InlineKeyboardMarkup markup = chooseChildAttribute.generateChildMarkup(children);
+            telegramBot.edit(text, markup, update);
+        } else if (hasCallback(update, "/back-group-choose-child")) {
+            String text = groupChooseChildAttribute.getText();
+            InlineKeyboardMarkup markup = groupChooseChildAttribute.generateChildMarkup(children);
+            telegramBot.edit(text, markup, update);
+        }
     }
 }

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
 @Component
-@ConfigurationProperties(prefix = "attr.wrong-finish")
-public class WrongFinishAttribute extends BaseAttribute {
+@ConfigurationProperties(prefix = "attr.wrong-concurrent-finish")
+public class WrongConcurrentFinishAttribute extends BaseAttribute {
 }

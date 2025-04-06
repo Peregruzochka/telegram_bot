@@ -32,14 +32,13 @@ public class DatesHandler implements UpdateHandler {
 
     @Override
     public boolean isApplicable(Update update) {
-        return update.hasCallbackQuery() && (
-                update.getCallbackQuery().getData().equals("/dates")
-                        || update.getCallbackQuery().getData().equals("/back-to-dates"));
+        return hasCallback(update, "/dates")
+                        || hasCallback(update, "/back-to-dates");
     }
 
     @Override
     public void compute(Update update) {
-        String telegramId = update.getCallbackQuery().getFrom().getId().toString();
+        String telegramId = bot.extractTelegramId(update).toString();
 
         LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
         TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
@@ -48,7 +47,7 @@ public class DatesHandler implements UpdateHandler {
             return;
         }
 
-        List<TimeSlotDto> timeslots = botBackendClient.getTeacherTimeSlotsInNextMonth(teacher.getId());
+        List<TimeSlotDto> timeslots = botBackendClient.getTeacherAvailableTimeSlotsInNextMonth(teacher.getId());
         weekCursorByTelegramId.put(telegramId, 0);
 
         String text = datesAttribute.generateText(lesson, teacher);

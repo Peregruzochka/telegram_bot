@@ -7,41 +7,42 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
+import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
+import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
-import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
-import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.handler.datatime.DatesAttribute;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
+import ru.pereguzochka.telegram_bot.handler.datatime.GroupDatesAttribute;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedGroupLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
 @Component
+@Slf4j
 @RequiredArgsConstructor
-public class SelectTeacherHandler implements UpdateHandler {
-    private final SelectedLessonByTelegramId selectedLessonByTelegramId;
-    private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
-    private final RestartBotMessageSender restartBotMessageSender;
-    private final TeacherDescriptionAttribute teacherDescriptionAttribute;
+public class SelectGroupTeacherHandler implements UpdateHandler {
+
     private final TelegramBot telegramBot;
+    private final SelectedGroupLessonByTelegramId selectedGroupLessonByTelegramId;
+    private final RestartBotMessageSender restartBotMessageSender;
+    private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
     private final BotBackendClient botBackendClient;
-    private final DatesAttribute datesAttribute;
+    private final GroupTeacherDescriptionAttribute groupTeacherDescriptionAttribute;
+    private final GroupDatesAttribute groupDatesAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
-        return callbackStartWith(update, "/select-teacher:");
+        return  callbackStartWith(update, "/select-group-teacher:");
     }
 
     @Override
     public void compute(Update update) {
-        UUID teacherId = UUID.fromString(getCallbackPayload(update, "/select-teacher:"));
+        UUID teacherId = UUID.fromString(getCallbackPayload(update, "/select-group-teacher:"));
         String telegramId = telegramBot.extractTelegramId(update).toString();
-        LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
+        GroupLessonDto lesson = selectedGroupLessonByTelegramId.get(telegramId, GroupLessonDto.class).orElse(null);
         if (lesson == null) {
             restartBotMessageSender.send(update);
             return;
@@ -58,15 +59,15 @@ public class SelectTeacherHandler implements UpdateHandler {
 
         selectedTeacherByTelegramId.put(telegramId, teacher);
         if (teacher.isHidden()) {
-            List<TimeSlotDto> timeslots = botBackendClient.getTeacherAvailableTimeSlotsInNextMonth(teacherId);
+            List<GroupTimeSlotDto> timeslots = botBackendClient.getTeacherAvailableGroupTimeSlotInNextMonth(teacherId);
 
-            String text = datesAttribute.generateText(lesson, teacher);
-            InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(timeslots, 0);
+            String text = groupDatesAttribute.generateText(lesson, teacher);
+            InlineKeyboardMarkup markup = groupDatesAttribute.generateDatesMarkup(timeslots, 0);
             telegramBot.edit(text, markup, update);
 
         } else {
-            String text = teacherDescriptionAttribute.generateText(lesson, teacher);
-            InlineKeyboardMarkup markup = teacherDescriptionAttribute.createMarkup();
+            String text = groupTeacherDescriptionAttribute.generateText(lesson, teacher);
+            InlineKeyboardMarkup markup = groupTeacherDescriptionAttribute.createMarkup();
 
             UUID imageId = teacher.getImageID();
             ImageDto image = botBackendClient.getImageById(imageId);
@@ -75,6 +76,6 @@ public class SelectTeacherHandler implements UpdateHandler {
             telegramBot.sendImage(image, text, markup, update);
         }
 
-        log.info("telegramId: {} -> /select-teacher={}", telegramId, teacherId);
+        log.info("telegramId: {} -> /select-group-teacher:{}", telegramId, teacherId);
     }
 }

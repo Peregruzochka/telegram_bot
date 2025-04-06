@@ -24,7 +24,7 @@ public class SelectGroupLessonHandler implements UpdateHandler {
 
     @Override
     public boolean isApplicable(Update update) {
-        return callbackStartWith(update, "/select-group-lesson");
+        return callbackStartWith(update, "/select-group-lesson:");
     }
 
     @Override

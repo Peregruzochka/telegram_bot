@@ -7,61 +7,53 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
-import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
+import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
-import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.WeekCursorByTelegramId;
-import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
+import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedGroupLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChangeWeekHandler implements UpdateHandler {
-
-    private final WeekCursorByTelegramId weekCursorByTelegramId;
-    private final DatesAttribute datesAttribute;
-    private final SelectedLessonByTelegramId selectedLessonByTelegramId;
-    private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
-    private final RestartBotMessageSender restartBotMessageSender;
+public class GroupLocalDateHandler implements UpdateHandler {
     private final TelegramBot telegramBot;
+    private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
+    private final SelectedGroupLessonByTelegramId selectedGroupLessonByTelegramId;
+    private final RestartBotMessageSender restartBotMessageSender;
     private final BotBackendClient botBackendClient;
+    private final GroupTimeSlotAttribute groupTimeSlotAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
-        return callbackStartWith(update, "/change-week");
+        return callbackStartWith(update, "/group-local-date:");
     }
 
     @Override
     public void compute(Update update) {
+        LocalDate localDate = LocalDate.parse(getCallbackPayload(update, "/group-local-date:"));
         String telegramId = telegramBot.extractTelegramId(update).toString();
 
-        Integer weak = weekCursorByTelegramId.get(telegramId, Integer.class).orElse(0);
-
-        String callback = update.getCallbackQuery().getData();
-        if (callback.endsWith("+")) {
-            weak++;
-        } else if (callback.endsWith("-")) {
-            weak--;
-        }
-        weekCursorByTelegramId.put(telegramId, weak);
-
         TeacherDto teacher = selectedTeacherByTelegramId.get(telegramId, TeacherDto.class).orElse(null);
-        LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
+        GroupLessonDto lesson = selectedGroupLessonByTelegramId.get(telegramId, GroupLessonDto.class).orElse(null);
         if (lesson == null || teacher == null) {
             restartBotMessageSender.send(update);
             return;
         }
 
-        List<TimeSlotDto> timeslots = botBackendClient.getTeacherAvailableTimeSlotsInNextMonth(teacher.getId());
-        String text = datesAttribute.generateText(lesson, teacher);
-        InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(timeslots, weak);
+        List<GroupTimeSlotDto> timeslots = botBackendClient.getAvailableGroupTimeSlotsByDate(teacher.getId(), localDate);
+        List<GroupTimeSlotDto> userTimeslots = botBackendClient.getAvailableGroupTimeSlotsByDate(teacher.getId(), localDate);
+
+        String text = groupTimeSlotAttribute.generateText(lesson, teacher, localDate);
+        InlineKeyboardMarkup markup = groupTimeSlotAttribute.createTimeMarkup(timeslots, userTimeslots);
+
         telegramBot.edit(text, markup, update);
 
-        log.info("telegramId: {} -> {}", telegramId, callback);
+        log.info("telegramId: {} -> {}", telegramId, update.getCallbackQuery().getData());
     }
 }

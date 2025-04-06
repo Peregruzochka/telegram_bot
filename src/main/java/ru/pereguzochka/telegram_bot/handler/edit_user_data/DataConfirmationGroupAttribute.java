@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
-import ru.pereguzochka.telegram_bot.dto.LessonDto;
+import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
+import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
-import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
@@ -23,13 +23,13 @@ import java.util.Locale;
 @Component
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "attr.data-confirmation")
-public class DataConfirmationAttribute extends BaseAttribute {
+@ConfigurationProperties(prefix = "attr.group-data-confirmation")
+public class DataConfirmationGroupAttribute extends BaseAttribute {
     private String backChooseChildCallback;
 
-    public String generateDataConfirmationText(LessonDto lesson,
+    public String generateDataConfirmationText(GroupLessonDto lesson,
                                                TeacherDto teacher,
-                                               TimeSlotDto timeSlot,
+                                               GroupTimeSlotDto timeSlot,
                                                ChildDto child,
                                                UserDto user) {
         String lessonName = lesson.getName();
@@ -61,13 +61,13 @@ public class DataConfirmationAttribute extends BaseAttribute {
         return InlineKeyboardMarkup.builder().keyboard(buttons).build();
     }
 
-    private String localDateToString(TimeSlotDto timeSlot) {
+    private String localDateToString(GroupTimeSlotDto timeSlot) {
         LocalDate localDate = timeSlot.getStartTime().toLocalDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, dd MMMM", new Locale("ru"));
         return localDate.format(formatter);
     }
 
-    private String timeToString(TimeSlotDto timeSlot) {
+    private String timeToString(GroupTimeSlotDto timeSlot) {
         LocalDateTime startTime = timeSlot.getStartTime();
         LocalDateTime endTime = timeSlot.getEndTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", new Locale("ru"));

@@ -12,7 +12,9 @@ public class RestartBotMessageSender {
     private final RestartBotMessageAttribute restartBotMessageAttribute;
 
     public void send(Update update) {
-        telegramBot.answer(update);
+        if (update.hasCallbackQuery()) {
+            telegramBot.answer(update);
+        }
         telegramBot.send(restartBotMessageAttribute.getText(), update);
     }
 }

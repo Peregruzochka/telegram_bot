@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.pereguzochka.telegram_bot.dto.CancelDto;
 import ru.pereguzochka.telegram_bot.dto.CreateAtRegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
+import ru.pereguzochka.telegram_bot.dto.GroupRegistrationDto;
+import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
@@ -40,14 +42,24 @@ public interface BotBackendClient {
     @GetMapping("/group-lessons/{lesson-id}")
     GroupLessonDto getGroupLesson(@PathVariable(name = "lesson-id") UUID lessonId);
 
-    @GetMapping("/timeslots/next-month-search")
-    List<TimeSlotDto> getTeacherTimeSlotsInNextMonth(@RequestParam("teacher-id") UUID teacherId);
+    @GetMapping("/timeslots/available-next-month-search")
+    List<TimeSlotDto> getTeacherAvailableTimeSlotsInNextMonth(@RequestParam("teacher-id") UUID teacherId);
 
     @GetMapping("/timeslots/available-by-date")
     List<TimeSlotDto> getTeacherAvailableTimeSlotsByDate(@RequestParam("teacher-id") UUID teacherId, @RequestParam LocalDate date);
 
     @GetMapping("/timeslots/{timeslot-id}")
     TimeSlotDto getTimeSlot(@PathVariable("timeslot-id") UUID timeslotId);
+
+    @GetMapping("/group-timeslots/available-next-month-search")
+    List<GroupTimeSlotDto> getTeacherAvailableGroupTimeSlotInNextMonth(@RequestParam("teacher-id") UUID teacherId);
+
+    @GetMapping("/group-timeslots/available-by-date")
+    List<GroupTimeSlotDto> getAvailableGroupTimeSlotsByDate(@RequestParam("teacher-id") UUID teacherId,
+                                                            @RequestParam("date") LocalDate date);
+
+    @GetMapping("/group-timeslots/{group-timeslot-id}")
+    GroupTimeSlotDto getGroupTimeSlot(@PathVariable("group-timeslot-id") UUID groupTimeslotId);
 
     @PostMapping("/registrations")
     RegistrationDto addRegistration(@RequestBody RegistrationDto registrationDto);
@@ -60,6 +72,9 @@ public interface BotBackendClient {
 
     @GetMapping("/registrations/{id}")
     RegistrationDto getRegistration(@PathVariable("id") UUID id);
+
+    @PostMapping("/group-registrations")
+    GroupRegistrationDto addGroupRegistration(@RequestBody GroupRegistrationDto groupRegistrationDto);
 
     @PutMapping("/registrations/{registration-id}/confirm")
     RegistrationDto confirmRegistration(@PathVariable("registration-id") UUID registrationId);
