@@ -15,6 +15,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import ru.pereguzochka.telegram_bot.redis.redis_broker.FirstQuestionEventListener;
 import ru.pereguzochka.telegram_bot.redis.redis_broker.NotConfirmedEventListener;
+import ru.pereguzochka.telegram_bot.redis.redis_broker.NotConfirmedGroupEventListener;
 import ru.pereguzochka.telegram_bot.redis.redis_broker.QRSenderEventListener;
 import ru.pereguzochka.telegram_bot.redis.redis_broker.SecondQuestionEventListener;
 
@@ -24,12 +25,16 @@ import java.io.Serializable;
 @RequiredArgsConstructor
 public class RedisConfig {
     private final NotConfirmedEventListener notConfirmedEventListener;
+    private final NotConfirmedGroupEventListener notConfirmedGroupEventListener;
     private final FirstQuestionEventListener firstQuestionEventListener;
     private final SecondQuestionEventListener secondQuestionEventListener;
     private final QRSenderEventListener qrSenderEventListener;
 
     @Value("${spring.data.redis-channel.not-confirmed}")
     private String notConfirmedChannel;
+
+    @Value("${spring.data.redis-channel.group-not-confirmed}")
+    private String groupNotConfirmedChannel;
 
     @Value("${spring.data.redis-channel.first-question}")
     private String firstQuestionChannel;
@@ -66,6 +71,11 @@ public class RedisConfig {
         container.addMessageListener(
                 new MessageListenerAdapter(notConfirmedEventListener),
                 new ChannelTopic(notConfirmedChannel)
+        );
+
+        container.addMessageListener(
+                new MessageListenerAdapter(notConfirmedGroupEventListener),
+                new ChannelTopic(groupNotConfirmedChannel)
         );
 
         container.addMessageListener(

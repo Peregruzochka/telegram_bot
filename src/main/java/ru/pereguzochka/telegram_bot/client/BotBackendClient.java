@@ -93,6 +93,12 @@ public interface BotBackendClient {
     @PutMapping("/registrations/{registration-id}/decline")
     RegistrationDto declineRegistration(@PathVariable("registration-id") UUID registrationId);
 
+    @PutMapping("/group-registrations/{registration-id}/confirm")
+    GroupRegistrationDto confirmGroupRegistration(@PathVariable("registration-id") UUID registrationId);
+
+    @PutMapping("/group-registrations/{registration-id}/decline")
+    GroupRegistrationDto declineGroupRegistration(@PathVariable("registration-id") UUID registrationId);
+
     @PostMapping("/cancellations")
     CancelDto addCancel(@RequestBody CancelDto cancelDto);
 

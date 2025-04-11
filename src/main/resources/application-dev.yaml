@@ -11,6 +11,7 @@ spring:
       port: ${SPRING_REDIS_PORT:6377}
     redis-channel:
       not-confirmed: not-confirmed
+      group-not-confirmed: group-not-confirmed
       first-question: first-question
       second-question: second-question
       qr-sender: qr-sender
