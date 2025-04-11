@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.dto.GroupRegistrationEvent;
 import ru.pereguzochka.telegram_bot.dto.RegistrationEvent;
 import ru.pereguzochka.telegram_bot.handler.MainMenuPortAttribute;
 
@@ -19,6 +20,21 @@ public class QRSender {
     private String qrCodeUrl;
 
     public void send(RegistrationEvent event) {
+
+        telegramBot.sendImage(
+                qrCodeUrl,
+                qrSenderAttribute.generateText(event),
+                event.getTelegramId()
+        );
+
+        telegramBot.send(
+                mainMenuPortAttribute.getText(),
+                mainMenuPortAttribute.createMarkup(),
+                event.getTelegramId()
+        );
+    }
+
+    public void send(GroupRegistrationEvent event) {
 
         telegramBot.sendImage(
                 qrCodeUrl,

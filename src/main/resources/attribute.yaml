@@ -534,6 +534,10 @@ attr:
       "/first-confirm:"
     decline-button-callback:
       "/first-decline:"
+    confirm-group-button-callback:
+      "/first-group-confirm:"
+    decline-group-button-callback:
+      "/first-group-decline:"
 
   second-question-event-sender:
     text: |

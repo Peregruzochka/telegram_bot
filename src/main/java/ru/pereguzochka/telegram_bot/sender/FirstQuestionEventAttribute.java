@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.pereguzochka.telegram_bot.dto.GroupRegistrationEvent;
 import ru.pereguzochka.telegram_bot.dto.RegistrationEvent;
 
 import java.time.LocalDateTime;
@@ -23,8 +24,25 @@ public class FirstQuestionEventAttribute {
     private String declineButtonText;
     private String confirmButtonCallback;
     private String declineButtonCallback;
+    private String confirmGroupButtonCallback;
+    private String declineGroupButtonCallback;
 
     public String generateText(RegistrationEvent event) {
+        String date = convertToDate(event.getStartTime());
+        String time = convertToTime(event.getStartTime(), event.getEndTime());
+        String lesson = event.getLessonName();
+        String teacher = event.getTeacherName();
+        String child = event.getChildName();
+
+        return text
+                .replace("{0}", date)
+                .replace("{1}", time)
+                .replace("{2}", lesson)
+                .replace("{3}", teacher)
+                .replace("{4}", child);
+    }
+
+    public String generateText(GroupRegistrationEvent event) {
         String date = convertToDate(event.getStartTime());
         String time = convertToTime(event.getStartTime(), event.getEndTime());
         String lesson = event.getLessonName();
@@ -47,8 +65,16 @@ public class FirstQuestionEventAttribute {
                 .build();
     }
 
+    public InlineKeyboardMarkup generateMarkup(GroupRegistrationEvent event) {
+        InlineKeyboardButton buttonOne = createButton(confirmButtonText, confirmGroupButtonCallback + event.getRegistrationId());
+        InlineKeyboardButton buttonTwo = createButton(declineButtonText, declineGroupButtonCallback + event.getRegistrationId());
+        return InlineKeyboardMarkup.builder()
+                .keyboard(List.of(List.of(buttonOne), List.of(buttonTwo)))
+                .build();
+    }
+
     private String convertToDate(LocalDateTime time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, d MMMM yyyy", new Locale("ru"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EE, d MMMM", new Locale("ru"));
         return time.format(formatter);
     }
 
