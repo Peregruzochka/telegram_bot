@@ -106,6 +106,7 @@ public class CancelChooseRegistrationAttribute extends BaseAttribute {
         return Pair.of(startTime, registrationsText);
     }
 
+
     private Pair<LocalDateTime, String> generateOneGroupRegistrationText(GroupRegistrationDto registrations) {
         LocalDateTime startTime = registrations.getTimeSlot().getStartTime();
         String date = dateToString(startTime);

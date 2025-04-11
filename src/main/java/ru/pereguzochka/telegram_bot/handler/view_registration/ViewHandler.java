@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
+import ru.pereguzochka.telegram_bot.dto.GroupRegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -38,8 +39,9 @@ public class ViewHandler implements UpdateHandler {
         }
 
         List<RegistrationDto> registrations = backendClient.getAllUserActualRegistrations(user.getId());
+        List<GroupRegistrationDto> groupRegistration = backendClient.getAllUserActualGroupRegistrations(user.getId());
 
-        String text = viewAttribute.generateText(registrations);
+        String text = viewAttribute.generateText(registrations, groupRegistration);
         InlineKeyboardMarkup markup = viewAttribute.createMarkup();
 
         telegramBot.edit(text, markup, update);
