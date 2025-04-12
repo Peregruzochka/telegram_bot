@@ -9,6 +9,8 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 @ConfigurationProperties(prefix = "attr.group-lesson-description")
 public class GroupLessonDescriptionAttribute extends BaseAttribute {
     public String generateText(GroupLessonDto lesson) {
-        return text.replace("{}", "👣" + lesson.getName() + "👣" + "\n\n" + lesson.getDescription());
+        return text
+                .replace("{0}", lesson.getName())
+                .replace("{1}", lesson.getDescription());
     }
 }
