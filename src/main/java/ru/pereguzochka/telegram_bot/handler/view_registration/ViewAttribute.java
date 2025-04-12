@@ -25,7 +25,7 @@ public class ViewAttribute extends BaseAttribute {
     private String regPattern;
 
     public String generateText(List<RegistrationDto> registrations, List<GroupRegistrationDto> groupRegistration) {
-        if (registrations.isEmpty()) {
+        if (registrations.isEmpty() && groupRegistration.isEmpty()) {
             return emptyRegistrationText;
         }
 
