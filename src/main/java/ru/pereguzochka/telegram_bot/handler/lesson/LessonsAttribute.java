@@ -11,6 +11,7 @@ import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -44,6 +45,10 @@ public class LessonsAttribute extends BaseAttribute {
                 .map(List::of)
                 .forEach(newButtons::add);
 
-        return generateMarkup(newButtons);
+        List<List<InlineKeyboardButton>> newSortedButton = newButtons.stream()
+                .sorted(Comparator.comparing(list -> list.get(0).getText()))
+                .toList();
+
+        return generateMarkup(newSortedButton);
     }
 }

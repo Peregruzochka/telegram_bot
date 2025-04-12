@@ -40,8 +40,10 @@ attr:
     group-label: 👥
 
   lesson-description:
-    text: | 
-      <b>{}</b>
+    text: |
+      🎯 <b>Направление:</b> {0}
+      
+      {1}
     buttons:
       - Продолжить запись »
       - « Назад
@@ -51,7 +53,9 @@ attr:
 
   group-lesson-description:
     text: |
-      <b>{}</b>
+      🎯 <b>Направление:</b> {0}
+      
+      {1}
     buttons:
       - Продолжить запись »
       - « Назад
