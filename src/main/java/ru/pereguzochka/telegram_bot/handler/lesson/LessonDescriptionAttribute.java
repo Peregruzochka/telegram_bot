@@ -3,7 +3,6 @@ package ru.pereguzochka.telegram_bot.handler.lesson;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 
@@ -11,6 +10,8 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 @ConfigurationProperties(prefix = "attr.lesson-description")
 public class LessonDescriptionAttribute extends BaseAttribute {
     public String generateText(LessonDto lesson) {
-        return getText().replace("{}", "👣" + lesson.getName() + "👣" + "\n\n" + lesson.getDescription());
+        return text
+                .replace("{0}", lesson.getName())
+                .replace("{1}", lesson.getDescription());
     }
 }
