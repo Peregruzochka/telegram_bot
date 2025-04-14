@@ -59,6 +59,15 @@ public interface BotBackendClient {
     List<GroupTimeSlotDto> getAvailableGroupTimeSlotsByDate(@RequestParam("teacher-id") UUID teacherId,
                                                             @RequestParam("date") LocalDate date);
 
+    @GetMapping("/group-timeslots/next-month-search-by-lesson")
+    List<GroupTimeSlotDto> getTeacherGroupTimeSlotInNextMonthByLesson(@RequestParam("teacher-id") UUID teacherId,
+                                                                      @RequestParam("lesson-id") UUID lessonId);
+
+    @GetMapping("/group-timeslots/available-by-date-by-lesson")
+    List<GroupTimeSlotDto> getAvailableGroupTimeSlotsByDateByLesson(@RequestParam("teacher-id") UUID teacherId,
+                                                                    @RequestParam("lesson-id") UUID lessonId,
+                                                                    @RequestParam("date") LocalDate date);
+
     @GetMapping("/group-timeslots/{group-timeslot-id}")
     GroupTimeSlotDto getGroupTimeSlot(@PathVariable("group-timeslot-id") UUID groupTimeslotId);
 

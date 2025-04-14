@@ -51,7 +51,7 @@ public class GroupLocalDateHandler implements UpdateHandler {
             return;
         }
 
-        List<GroupTimeSlotDto> timeslots = botBackendClient.getAvailableGroupTimeSlotsByDate(teacher.getId(), localDate);
+        List<GroupTimeSlotDto> timeslots = botBackendClient.getAvailableGroupTimeSlotsByDateByLesson(teacher.getId(), lesson.getId(), localDate);
         List<GroupTimeSlotDto> userTimeslots = new ArrayList<>();
         if (user.getId() != null) {
             userTimeslots = botBackendClient.getUserGroupTimeSlotsByDate(user.getId(), localDate);
