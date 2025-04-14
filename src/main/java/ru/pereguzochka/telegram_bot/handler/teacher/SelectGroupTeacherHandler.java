@@ -59,7 +59,7 @@ public class SelectGroupTeacherHandler implements UpdateHandler {
 
         selectedTeacherByTelegramId.put(telegramId, teacher);
         if (teacher.isHidden()) {
-            List<GroupTimeSlotDto> timeslots = botBackendClient.getTeacherAvailableGroupTimeSlotInNextMonth(teacherId);
+            List<GroupTimeSlotDto> timeslots = botBackendClient.getTeacherGroupTimeSlotInNextMonthByLesson(teacherId, lesson.getId());
 
             String text = groupDatesAttribute.generateText(lesson, teacher);
             InlineKeyboardMarkup markup = groupDatesAttribute.generateDatesMarkup(timeslots, 0);

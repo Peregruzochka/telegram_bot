@@ -57,7 +57,7 @@ public class GroupChangeWeekHandler implements UpdateHandler {
             return;
         }
 
-        List<GroupTimeSlotDto> timeslots = botBackendClient.getTeacherAvailableGroupTimeSlotInNextMonth(teacher.getId());
+        List<GroupTimeSlotDto> timeslots = botBackendClient.getTeacherGroupTimeSlotInNextMonthByLesson(teacher.getId(), lesson.getId());
         String text = groupDatesAttribute.generateText(lesson, teacher);
         InlineKeyboardMarkup markup = groupDatesAttribute.generateDatesMarkup(timeslots, weak);
         telegramBot.edit(text, markup, update);
