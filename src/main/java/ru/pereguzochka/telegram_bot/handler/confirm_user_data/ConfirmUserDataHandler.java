@@ -77,13 +77,14 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                     .build();
 
             try {
-                botBackendClient.addGroupRegistration(groupRegistration);
                 String text = finishAttribute.generateText(lesson, teacher, timeslot, child);
                 bot.delete(update);
                 bot.send(text, update);
                 String secondText = mainMenuPortAttribute.getText();
                 InlineKeyboardMarkup secondMarkup = mainMenuPortAttribute.createMarkup();
                 bot.send(secondText, secondMarkup, update);
+
+                botBackendClient.addGroupRegistration(groupRegistration);
             } catch (FeignException.InternalServerError e) {
                 int httpCode = e.status();
                 String responceBody = e.contentUTF8();
@@ -92,6 +93,8 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                 } else if (httpCode == 500 && responceBody.contains("Duplicate child registration found")) {
                     bot.edit(wrongChildGroupFinishAttribute.getText(), wrongChildGroupFinishAttribute.createMarkup(), update);
                 }
+            } catch (RuntimeException exception) {
+                bot.answer(update);
             }
         } else {
             LessonDto lesson = selectedLessonByTelegramId.get(telegramId, LessonDto.class).orElse(null);
