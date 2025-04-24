@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -22,6 +23,7 @@ public class TeachersHandler implements UpdateHandler {
     private final RestartBotMessageSender restartBotMessageSender;
     private final TeachersAttribute teachersAttribute;
     private final TelegramBot telegramBot;
+    private final BotBackendClient botBackendClient;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -38,7 +40,7 @@ public class TeachersHandler implements UpdateHandler {
             return;
         }
 
-        List<TeacherDto> teachers = lesson.getTeachers();
+        List<TeacherDto> teachers = botBackendClient.getTeachersByLesson(lesson.getId());
 
         String text =  teachersAttribute.generateText(lesson);
         InlineKeyboardMarkup markup = teachersAttribute.generateTeacherMarkup(teachers);

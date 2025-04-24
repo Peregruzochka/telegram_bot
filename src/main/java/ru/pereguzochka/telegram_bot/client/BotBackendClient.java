@@ -16,6 +16,7 @@ import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.ImageDto;
 import ru.pereguzochka.telegram_bot.dto.LessonDto;
 import ru.pereguzochka.telegram_bot.dto.RegistrationDto;
+import ru.pereguzochka.telegram_bot.dto.TeacherDto;
 import ru.pereguzochka.telegram_bot.dto.TimeSlotDto;
 import ru.pereguzochka.telegram_bot.dto.UserDto;
 
@@ -114,4 +115,10 @@ public interface BotBackendClient {
     @PostMapping("/group-cancellations")
     GroupCancelDto addGroupCancel(@RequestParam("group-registration-id") UUID registrationId,
                                   @RequestParam("case") String caseDescription);
+
+    @GetMapping("/teachers/by-lesson")
+    List<TeacherDto> getTeachersByLesson(@RequestParam UUID lessonId);
+
+    @GetMapping("/teachers/by-group-lesson")
+    List<TeacherDto> getTeachersByGroupLesson(@RequestParam UUID lessonId);
 }
