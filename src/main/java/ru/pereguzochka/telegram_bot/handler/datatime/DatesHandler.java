@@ -15,6 +15,7 @@ import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTea
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.WeekCursorByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
+import ru.pereguzochka.telegram_bot.tools.TimeSlotsCutoffTimeFilter;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class DatesHandler implements UpdateHandler {
     private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
     private final DatesAttribute datesAttribute;
+    private final TimeSlotsCutoffTimeFilter timeSlotsCutoffTimeFilter;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -48,10 +50,11 @@ public class DatesHandler implements UpdateHandler {
         }
 
         List<TimeSlotDto> timeslots = botBackendClient.getTeacherAvailableTimeSlotsInNextMonth(teacher.getId());
+        List<TimeSlotDto> validTimeslots = timeSlotsCutoffTimeFilter.cutOff(timeslots);
         weekCursorByTelegramId.put(telegramId, 0);
 
         String text = datesAttribute.generateText(lesson, teacher);
-        InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(timeslots, 0);
+        InlineKeyboardMarkup markup = datesAttribute.generateDatesMarkup(validTimeslots, 0);
 
         String callback = update.getCallbackQuery().getData();
         if (callback.equals("/dates")) {

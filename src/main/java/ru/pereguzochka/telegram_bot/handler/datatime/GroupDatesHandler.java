@@ -15,6 +15,7 @@ import ru.pereguzochka.telegram_bot.redis.redis_repository.WeekCursorByTelegramI
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedGroupLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
+import ru.pereguzochka.telegram_bot.tools.TimeSlotsCutoffTimeFilter;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class GroupDatesHandler implements UpdateHandler {
     private final BotBackendClient botBackendClient;
     private final WeekCursorByTelegramId weekCursorByTelegramId;
     private final GroupDatesAttribute groupDatesAttribute;
+    private final TimeSlotsCutoffTimeFilter timeSlotsCutoffTimeFilter;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -48,10 +50,11 @@ public class GroupDatesHandler implements UpdateHandler {
         }
 
         List<GroupTimeSlotDto> timeslots = botBackendClient.getTeacherGroupTimeSlotInNextMonthByLesson(teacher.getId(), lesson.getId());
+        List<GroupTimeSlotDto> validTimeslots = timeSlotsCutoffTimeFilter.cutOffGroup(timeslots);
         weekCursorByTelegramId.put(telegramId, 0);
 
         String text = groupDatesAttribute.generateText(lesson, teacher);
-        InlineKeyboardMarkup markup = groupDatesAttribute.generateDatesMarkup(timeslots, 0);
+        InlineKeyboardMarkup markup = groupDatesAttribute.generateDatesMarkup(validTimeslots, 0);
 
         if (hasCallback(update, "/group-dates")) {
             telegramBot.delete(update);

@@ -16,6 +16,7 @@ import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedGro
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
+import ru.pereguzochka.telegram_bot.tools.TimeSlotsCutoffTimeFilter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class GroupLocalDateHandler implements UpdateHandler {
     private final BotBackendClient botBackendClient;
     private final GroupTimeSlotAttribute groupTimeSlotAttribute;
     private final UsersByTelegramId usersByTelegramId;
+    private final TimeSlotsCutoffTimeFilter timeSlotsCutoffTimeFilter;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -52,13 +54,14 @@ public class GroupLocalDateHandler implements UpdateHandler {
         }
 
         List<GroupTimeSlotDto> timeslots = botBackendClient.getAvailableGroupTimeSlotsByDateByLesson(teacher.getId(), lesson.getId(), localDate);
+        List<GroupTimeSlotDto> validTimeslots = timeSlotsCutoffTimeFilter.cutOffGroup(timeslots);
         List<GroupTimeSlotDto> userTimeslots = new ArrayList<>();
         if (user.getId() != null) {
             userTimeslots = botBackendClient.getUserGroupTimeSlotsByDate(user.getId(), localDate);
         }
 
         String text = groupTimeSlotAttribute.generateText(lesson, teacher, localDate);
-        InlineKeyboardMarkup markup = groupTimeSlotAttribute.createTimeMarkup(timeslots, userTimeslots);
+        InlineKeyboardMarkup markup = groupTimeSlotAttribute.createTimeMarkup(validTimeslots, userTimeslots);
 
         telegramBot.edit(text, markup, update);
 

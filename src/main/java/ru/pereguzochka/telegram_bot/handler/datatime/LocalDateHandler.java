@@ -14,6 +14,7 @@ import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedLessonByTelegramId;
 import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.SelectedTeacherByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
+import ru.pereguzochka.telegram_bot.tools.TimeSlotsCutoffTimeFilter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +29,7 @@ public class LocalDateHandler implements UpdateHandler {
     private final SelectedTeacherByTelegramId selectedTeacherByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
     private final SelectedLessonByTelegramId selectedLessonByTelegramId;
+    private final TimeSlotsCutoffTimeFilter timeSlotsCutoffTimeFilter;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -47,9 +49,10 @@ public class LocalDateHandler implements UpdateHandler {
         }
 
         List<TimeSlotDto> timeslots = botBackendClient.getTeacherAvailableTimeSlotsByDate(teacher.getId(), localDate);
+        List<TimeSlotDto> validTimeslots = timeSlotsCutoffTimeFilter.cutOff(timeslots);
 
         String text = timeSlotAttribute.generateText(lesson, teacher, localDate);
-        InlineKeyboardMarkup markup = timeSlotAttribute.createTimeMarkup(timeslots);
+        InlineKeyboardMarkup markup = timeSlotAttribute.createTimeMarkup(validTimeslots);
 
         bot.edit(text, markup, update);
 
