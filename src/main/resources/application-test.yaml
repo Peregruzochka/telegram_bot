@@ -31,3 +31,4 @@ bot-backend:
   port: 8091
 
 qr-code-url: src/main/resources/qr_code/qr.jpg
+cut-off-choose-time: "3" #hours
