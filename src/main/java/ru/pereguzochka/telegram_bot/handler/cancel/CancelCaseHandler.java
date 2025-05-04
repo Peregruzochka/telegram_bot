@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.cancel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -15,6 +16,7 @@ import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CancelCaseHandler implements UpdateHandler {
@@ -54,5 +56,7 @@ public class CancelCaseHandler implements UpdateHandler {
         String secondText = mainMenuPortAttribute.getText();
         InlineKeyboardMarkup secondMarkup = mainMenuPortAttribute.createMarkup();
         telegramBot.send(secondText, secondMarkup, update);
+
+        log.info("telegramId: {} -> /cancel-case: {}", telegramId, cancelCase);
     }
 }

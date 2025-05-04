@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.cancel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -12,6 +13,7 @@ import ru.pereguzochka.telegram_bot.redis.redis_repository.SelectedCancelRegistr
 
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GroupCancelRegistrationHandler implements UpdateHandler {
@@ -36,5 +38,8 @@ public class GroupCancelRegistrationHandler implements UpdateHandler {
         InlineKeyboardMarkup markup = groupCancelCaseAttribute.generateCancelCaseMarkup(registration);
 
         telegramBot.edit(text, markup, update);
+
+        log.info("telegramId: {} -> /group-cancel-registration: {}", telegramId, cancelRegistrationId);
+
     }
 }

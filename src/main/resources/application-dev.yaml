@@ -23,7 +23,7 @@ spring:
 logging:
   level:
     org.springframework: INFO
-    ru.pereguzochka.telegram_bot: DEBUG
+    ru.pereguzochka.telegram_bot: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%level] %logger{36} - %msg%n"
 

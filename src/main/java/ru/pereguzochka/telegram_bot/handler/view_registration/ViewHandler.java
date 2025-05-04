@@ -1,6 +1,7 @@
 package ru.pereguzochka.telegram_bot.handler.view_registration;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -15,6 +16,7 @@ import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ViewHandler implements UpdateHandler {
@@ -45,5 +47,7 @@ public class ViewHandler implements UpdateHandler {
         InlineKeyboardMarkup markup = viewAttribute.createMarkup();
 
         telegramBot.edit(text, markup, update);
+
+        log.info("telegramId: {} -> /view", telegramId);
     }
 }
