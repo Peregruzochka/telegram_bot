@@ -31,9 +31,27 @@ attr:
       - Групповое
       - « Назад
     callbacks:
-      - /ind-lessons
-      - /grp-lessons
+      - /ind-lesson
+      - /grp-lesson
       - /start
+
+  ind-lesson:
+    text: |
+      <b>Выберете желаемое направление🎯</b>\
+    buttons:
+      - « Назад
+    callbacks:
+      - /lesson-type
+    individual-callback: "/select-lesson:"
+
+  grp-lesson:
+    text: |
+      <b>Выберете желаемое направление🎯</b>\
+    buttons:
+      - « Назад
+    callbacks:
+      - /lesson-type
+    group-callback: "/select-group-lesson:"
 
   lessons:
     text: |
@@ -61,7 +79,7 @@ attr:
       - « Назад
     callbacks:
       - /teachers
-      - /lessons
+      - /ind-lesson
 
   group-lesson-description:
     text: |
@@ -73,7 +91,7 @@ attr:
       - « Назад
     callbacks:
       - /group-teachers
-      - /lessons
+      - /grp-lesson
 
   teachers:
     text: |
@@ -83,10 +101,19 @@ attr:
     buttons:
       - « Назад к выбору направления
     callbacks:
-      - /lessons
+      - /ind-lesson
     main-callbacks: "/select-teacher:"
-    main-group-callbacks: "/select-group-teacher:"
 
+  group-teachers:
+    text: |
+      🎯 <b>Направление:</b> {}
+      
+      <b>Выберите педагога👩‍🏫</b>
+    buttons:
+      - « Назад к выбору направления
+    callbacks:
+      - /grp-lesson
+    main-group-callbacks: "/select-group-teacher:"
 
   teacher-description:
     text: |

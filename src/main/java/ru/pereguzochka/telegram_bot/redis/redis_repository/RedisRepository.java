@@ -26,7 +26,7 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
     public void put(K key, V value) {
         checkMapName();
         hashOperations.put(mapName, key, value);
-        log.info("{}: put {}={}", mapName, key, value);
+        log.debug("{}: put {}={}", mapName, key, value);
     }
 
     public Optional<V> get(K key, Class<V> clazz) {
@@ -35,31 +35,31 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
 
         if (value != null) {
             V result = objectMapper.convertValue(value, clazz);
-            log.info("{}: get {}={}", mapName, key, result);
+            log.debug("{}: get {}={}", mapName, key, result);
             return Optional.of(result);
         }
         Optional<V> result = Optional.empty();
-        log.info("{}: get {}={}", mapName, key, result);
+        log.debug("{}: get {}={}", mapName, key, result);
         return result;
     }
 
     public void delete(K key) {
         checkMapName();
         hashOperations.delete(mapName, key);
-        log.info("{}: delete {}", mapName, key);
+        log.debug("{}: delete {}", mapName, key);
     }
 
     public boolean exists(K key) {
         checkMapName();
         boolean status = hashOperations.hasKey(mapName, key);
-        log.info("{}: exists {} = {}", mapName, key, status);
+        log.debug("{}: exists {} = {}", mapName, key, status);
         return status;
     }
 
     protected void setDefault(V value) {
         checkMapName();
         hashOperations.keys(mapName).forEach(k -> hashOperations.put(mapName, k, value));
-        log.info("{}: setDefault {}", mapName, value);
+        log.debug("{}: setDefault {}", mapName, value);
     }
 
     private void checkMapName() {
@@ -67,6 +67,4 @@ public abstract class RedisRepository<K extends Serializable, V extends Serializ
             throw new IllegalStateException("mapName is null");
         }
     }
-
-
 }

@@ -23,8 +23,8 @@ public class GroupTeacherHandler implements UpdateHandler {
     private final TelegramBot telegramBot;
     private final SelectedGroupLessonByTelegramId selectedGroupLessonByTelegramId;
     private final RestartBotMessageSender restartBotMessageSender;
-    private final TeachersAttribute teachersAttribute;
     private final BotBackendClient botBackendClient;
+    private final GroupTeachersAttribute groupTeachersAttribute;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -43,8 +43,8 @@ public class GroupTeacherHandler implements UpdateHandler {
 
         List<TeacherDto> teachers = botBackendClient.getTeachersByGroupLesson(lesson.getId());
 
-        String text =  teachersAttribute.generateText(lesson);
-        InlineKeyboardMarkup markup = teachersAttribute.generateGroupTeacherMarkup(teachers);
+        String text =  groupTeachersAttribute.generateText(lesson);
+        InlineKeyboardMarkup markup = groupTeachersAttribute.generateGroupTeacherMarkup(teachers);
 
         if (hasCallback(update, "/group-teachers")) {
             telegramBot.edit(text, markup, update);
