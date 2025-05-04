@@ -73,7 +73,8 @@ public class SelectTeacherHandler implements UpdateHandler {
 
             try {
                 telegramBot.delete(update);
-            } catch (RuntimeException ignored) {
+            } catch (RuntimeException exception) {
+                telegramBot.answer(update);
             }
             telegramBot.sendImage(image, text, markup, update);
         }
