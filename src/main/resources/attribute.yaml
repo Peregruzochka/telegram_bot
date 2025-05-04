@@ -9,7 +9,7 @@ attr:
       - Отменить занятие
       - Посмотреть предстоящие занятия
     callbacks:
-      - /lessons
+      - /lesson-type
       - /cancel
       - /view
 
@@ -21,7 +21,19 @@ attr:
     buttons:
       - Записаться на занятие
     callbacks:
-      - /lessons
+      - /lesson-type
+
+  lesson-type:
+    text: |
+      <b>Выберете желаемое направление🎯</b>
+    buttons:
+      - Индивидуальное
+      - Групповое
+      - « Назад
+    callbacks:
+      - /ind-lessons
+      - /grp-lessons
+      - /start
 
   lessons:
     text: |
