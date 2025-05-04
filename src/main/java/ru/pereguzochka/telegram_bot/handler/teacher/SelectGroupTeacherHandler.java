@@ -72,7 +72,10 @@ public class SelectGroupTeacherHandler implements UpdateHandler {
             UUID imageId = teacher.getImageID();
             ImageDto image = botBackendClient.getImageById(imageId);
 
-            telegramBot.delete(update);
+            try {
+                telegramBot.delete(update);
+            } catch (RuntimeException ignored) {
+            }
             telegramBot.sendImage(image, text, markup, update);
         }
 
