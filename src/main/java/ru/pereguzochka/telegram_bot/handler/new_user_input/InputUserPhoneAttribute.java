@@ -12,4 +12,5 @@ import org.springframework.stereotype.Component;
 public class InputUserPhoneAttribute {
     private String text;
     private String errorText;
+    private String errorPhoneText;
 }

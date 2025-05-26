@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
+import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.dto.ChildDto;
 import ru.pereguzochka.telegram_bot.dto.GroupLessonDto;
 import ru.pereguzochka.telegram_bot.dto.GroupTimeSlotDto;
@@ -48,6 +49,7 @@ public class InputUserPhoneHandler implements UpdateHandler {
     private final SelectedGroupLessonByTelegramId selectedGroupLessonByTelegramId;
     private final SelectedGroupTimeSlotByTelegramId selectedGroupTimeSlotByTelegramId;
     private final DataConfirmationGroupAttribute dataConfirmationGroupAttribute;
+    private final BotBackendClient botBackendClient;
 
     @Override
     public boolean isApplicable(Update update) {
@@ -64,6 +66,13 @@ public class InputUserPhoneHandler implements UpdateHandler {
         String phone = update.getMessage().getText();
         if (phoneNumberValidator.isValidPhoneNumber(phone)) {
             String editedPhone = phoneNumberFormatter.formatPhoneNumber(phone);
+            UserDto userByPhone = botBackendClient.getUserByPhone(editedPhone);
+            if (userByPhone != null) {
+                String text = inputUserPhoneAttribute.getErrorPhoneText();
+                telegramBot.send(text, update);
+                inputUserPhoneByTelegramId.setTrue(telegramId);
+                return;
+            }
 
             UserDto newUser = usersByTelegramId.get(telegramId, UserDto.class).orElse(null);
             if (newUser == null) {

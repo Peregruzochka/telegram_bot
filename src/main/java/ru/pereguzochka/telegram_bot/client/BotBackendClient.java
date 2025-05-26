@@ -29,6 +29,9 @@ public interface BotBackendClient {
     @GetMapping("/users")
     UserDto getUserByTelegramId(@RequestParam(name = "telegram-id") Long telegramId);
 
+    @GetMapping("/users/phone")
+    UserDto getUserByPhone(@RequestParam(name = "phone") String phone);
+
     @GetMapping("/lessons/all")
     List<LessonDto> getAllLessons();
 
