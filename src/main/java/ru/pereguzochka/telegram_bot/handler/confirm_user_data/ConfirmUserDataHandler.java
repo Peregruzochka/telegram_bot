@@ -2,6 +2,7 @@ package ru.pereguzochka.telegram_bot.handler.confirm_user_data;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -28,6 +29,7 @@ import ru.pereguzochka.telegram_bot.redis.redis_repository.dto_cache.UsersByTele
 import ru.pereguzochka.telegram_bot.redis.redis_repository.flag_cache.GroupLessonFlagByTelegramId;
 import ru.pereguzochka.telegram_bot.sender.RestartBotMessageSender;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ConfirmUserDataHandler implements UpdateHandler {
@@ -77,6 +79,7 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                     .build();
 
             try {
+                botBackendClient.addGroupRegistration(groupRegistration);
                 String text = finishAttribute.generateText(lesson, teacher, timeslot, child);
                 bot.delete(update);
                 bot.send(text, update);
@@ -84,14 +87,17 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                 InlineKeyboardMarkup secondMarkup = mainMenuPortAttribute.createMarkup();
                 bot.send(secondText, secondMarkup, update);
 
-                botBackendClient.addGroupRegistration(groupRegistration);
             } catch (FeignException.InternalServerError e) {
                 int httpCode = e.status();
                 String responceBody = e.contentUTF8();
-                if (httpCode == 500 && responceBody.contains("TimeSlot is not available")) {
-                    bot.edit(wrongConcurrentGroupFinishAttribute.getText(), wrongConcurrentGroupFinishAttribute.createMarkup(), update);
-                } else if (httpCode == 500 && responceBody.contains("Duplicate child registration found")) {
-                    bot.edit(wrongChildGroupFinishAttribute.getText(), wrongChildGroupFinishAttribute.createMarkup(), update);
+                if (httpCode == 500) {
+                    if (responceBody.contains("TimeSlot is not available")) {
+                        bot.edit(wrongConcurrentGroupFinishAttribute.getText(), wrongConcurrentGroupFinishAttribute.createMarkup(), update);
+                    } else if (responceBody.contains("Duplicate child registration found")) {
+                        bot.edit(wrongChildGroupFinishAttribute.getText(), wrongChildGroupFinishAttribute.createMarkup(), update);
+                    } else if (responceBody.contains("Registration already exists for the child")) {
+                        bot.edit(wrongConcurrentGroupFinishAttribute.getChildTimeConflictText(), wrongChildGroupFinishAttribute.createMarkup(), update);
+                    }
                 }
             } catch (RuntimeException exception) {
                 bot.answer(update);
@@ -126,12 +132,18 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                 bot.send(secondText, secondMarkup, update);
 
             } catch (FeignException.InternalServerError e) {
+                log.info(e.getMessage());
                 int httpCode = e.status();
                 String responceBody = e.contentUTF8();
-                if (httpCode == 500 && responceBody.contains("TimeSlot is not available")) {
-                    bot.edit(wrongConcurrentFinishAttribute.getText(), wrongConcurrentFinishAttribute.createMarkup(), update);
+                if (httpCode == 500) {
+                    if (responceBody.contains("TimeSlot is not available")) {
+                        bot.edit(wrongConcurrentFinishAttribute.getText(), wrongConcurrentFinishAttribute.createMarkup(), update);
+                    } else if (responceBody.contains("Registration already exists for the child")) {
+                        bot.edit(wrongConcurrentFinishAttribute.getChildTimeConflictText(), wrongConcurrentFinishAttribute.createMarkup(), update);
+                    }
                 }
             }
         }
+        log.info("telegram Id: {} -> /confirm-user-data", telegramId);
     }
 }
