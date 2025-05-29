@@ -132,6 +132,7 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                 bot.send(secondText, secondMarkup, update);
 
             } catch (FeignException.InternalServerError e) {
+                log.info(e.contentUTF8());
                 int httpCode = e.status();
                 String responceBody = e.contentUTF8();
                 if (httpCode == 500) {
