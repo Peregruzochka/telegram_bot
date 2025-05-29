@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -19,17 +20,34 @@ public abstract class BaseAttribute {
     protected List<String> callbacks;
 
     public InlineKeyboardMarkup createMarkup() {
-        if (buttons.size() != callbacks.size()) {
-            throw new IllegalStateException("The sizes of the lists of buttons and callbacks must match");
-        }
-
+        checkButtonAndCallbackSizes();
         List<List<InlineKeyboardButton>> keyboard = IntStream.range(0, buttons.size())
-                .mapToObj(i -> List.of(createButton(buttons.get(i), callbacks.get(i))))
+                .mapToObj(i -> createButton(buttons.get(i), callbacks.get(i)))
+                .map(List::of)
                 .toList();
 
         return InlineKeyboardMarkup.builder()
                 .keyboard(keyboard)
                 .build();
+    }
+
+    public InlineKeyboardMarkup createMarkupWithoutButtons(int... index) {
+        checkButtonAndCallbackSizes();
+        List<List<InlineKeyboardButton>> keyboard = IntStream.range(0, buttons.size())
+                .dropWhile(i -> Arrays.stream(index).anyMatch(idx -> i == idx))
+                .mapToObj(i -> createButton(buttons.get(i), callbacks.get(i)))
+                .map(List::of)
+                .toList();
+
+        return InlineKeyboardMarkup.builder()
+                .keyboard(keyboard)
+                .build();
+    }
+
+    private void checkButtonAndCallbackSizes() {
+        if (buttons.size() != callbacks.size()) {
+            throw new IllegalStateException("The sizes of the lists of buttons and callbacks must match");
+        }
     }
 
     public InlineKeyboardMarkup generateMarkup(List<List<InlineKeyboardButton>> newButtons) {
@@ -47,6 +65,4 @@ public abstract class BaseAttribute {
                 .callbackData(callback)
                 .build();
     }
-
-
 }

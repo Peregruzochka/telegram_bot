@@ -12,4 +12,8 @@ import ru.pereguzochka.telegram_bot.handler.BaseAttribute;
 @ConfigurationProperties(prefix = "attr.wrong-concurrent-finish")
 public class WrongConcurrentFinishAttribute extends BaseAttribute {
     private String childTimeConflictText;
+    private String teacherDayConflictText;
+
+
+
 }

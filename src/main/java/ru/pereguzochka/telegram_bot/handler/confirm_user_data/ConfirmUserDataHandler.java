@@ -132,7 +132,6 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                 bot.send(secondText, secondMarkup, update);
 
             } catch (FeignException.InternalServerError e) {
-                log.info(e.getMessage());
                 int httpCode = e.status();
                 String responceBody = e.contentUTF8();
                 if (httpCode == 500) {
@@ -140,6 +139,8 @@ public class ConfirmUserDataHandler implements UpdateHandler {
                         bot.edit(wrongConcurrentFinishAttribute.getText(), wrongConcurrentFinishAttribute.createMarkup(), update);
                     } else if (responceBody.contains("Registration already exists for the child")) {
                         bot.edit(wrongConcurrentFinishAttribute.getChildTimeConflictText(), wrongConcurrentFinishAttribute.createMarkup(), update);
+                    } else if (responceBody.contains("Registration already exists today for the teacher")) {
+                        bot.edit(wrongConcurrentFinishAttribute.getTeacherDayConflictText(), wrongConcurrentFinishAttribute.createMarkupWithoutButtons(0), update);
                     }
                 }
             }
