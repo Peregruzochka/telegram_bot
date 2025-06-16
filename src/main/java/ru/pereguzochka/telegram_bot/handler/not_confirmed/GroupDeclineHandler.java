@@ -1,8 +1,10 @@
 package ru.pereguzochka.telegram_bot.handler.not_confirmed;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.pereguzochka.telegram_bot.bot.TelegramBot;
 import ru.pereguzochka.telegram_bot.client.BotBackendClient;
 import ru.pereguzochka.telegram_bot.handler.UpdateHandler;
@@ -26,15 +28,20 @@ public class GroupDeclineHandler implements UpdateHandler {
     @Override
     public void compute(Update update) {
         UUID registrationId = UUID.fromString(getCallbackPayload(update, "/first-group-decline:"));
-
-        backendClient.declineGroupRegistration(registrationId);
-
-        telegramBot.answer(update);
-        telegramBot.send(
-                declineMessageAttribute.getText(),
-                declineMessageAttribute.createMarkup(),
-                update
-        );
+        try{
+            backendClient.declineGroupRegistration(registrationId);
+            telegramBot.answer(update);
+            String text = declineMessageAttribute.getText();
+            InlineKeyboardMarkup markup = declineMessageAttribute.createMarkup();
+            telegramBot.send(text, markup, update);
+        } catch (FeignException.InternalServerError e) {
+            if (e.getMessage().contains("Incorrect decline")) {
+                telegramBot.answer(update);
+                String text = declineMessageAttribute.getIncorrectDeclineText();
+                InlineKeyboardMarkup markup = declineMessageAttribute.createMarkup();
+                telegramBot.send(text, markup, update);
+            }
+        }
     }
 }
 

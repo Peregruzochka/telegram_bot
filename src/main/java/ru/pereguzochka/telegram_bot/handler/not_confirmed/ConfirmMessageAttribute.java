@@ -11,4 +11,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "attr.confirm-message")
 public class ConfirmMessageAttribute {
     private String text;
+    private String incorrectConfirmText;
 }
