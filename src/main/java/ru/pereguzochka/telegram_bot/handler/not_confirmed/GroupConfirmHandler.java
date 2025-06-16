@@ -45,6 +45,7 @@ public class GroupConfirmHandler implements UpdateHandler {
             telegramBot.send(mainMenuPortAttribute.getText(), mainMenuPortAttribute.createMarkup(), update);
             log.info("telegramId: {} -> /first-group-confirm", telegramId);
         } catch (FeignException.InternalServerError e) {
+            log.info(e.getMessage());
             if (e.getMessage().contains("Incorrect confirm")) {
                 telegramBot.answer(update);
                 String text = confirmMessageAttribute.getIncorrectConfirmText();
